@@ -2,8 +2,8 @@ package baseproject
 
 import (
 	"github.com/gorilla/securecookie"
-	"github.com/uberswe/golang-base-project/config"
-	"github.com/uberswe/golang-base-project/text"
+	"github.com/uberswe/domains-sweden/config"
+	"github.com/uberswe/domains-sweden/text"
 	"log"
 	"os"
 	"strconv"

@@ -4,9 +4,9 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"github.com/uberswe/golang-base-project/config"
-	"github.com/uberswe/golang-base-project/lang"
-	"github.com/uberswe/golang-base-project/middleware"
+	"github.com/uberswe/domains-sweden/config"
+	"github.com/uberswe/domains-sweden/lang"
+	"github.com/uberswe/domains-sweden/middleware"
 	"gorm.io/gorm"
 )
 

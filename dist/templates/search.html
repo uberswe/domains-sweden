@@ -6,15 +6,14 @@
         {{ template "messages.html" . }}
         {{ range $result := .Results }}
         <div class="search-result">
-            <h3>{{ $result.Title }}</h3>
-            <p>{{ $result.Description }}</p>
-            <p><a href="{{ $result.URL }}">{{ $result.URL }}</a></p>
+            <h3><a href="{{ $result.URL }}">{{ $result.Host }}</a></h3>
         </div>
         {{ end }}
         <div class="pagination">
         {{ if .Prev }}
         <a href="{{ .PrevURL }}">{{ call .Trans "Previous" }}</a>
         {{ end }}
+            {{ if and .Prev .Next }} | {{ end }}
         {{ if .Next }}
         <a href="{{ .NextURL }}">{{ call .Trans "Next" }}</a>
         {{ end }}

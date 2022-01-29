@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/uberswe/golang-base-project/models"
+	"github.com/uberswe/domains-sweden/models"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"

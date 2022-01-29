@@ -8,8 +8,9 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"github.com/uberswe/golang-base-project/middleware"
-	"github.com/uberswe/golang-base-project/routes"
+	"github.com/uberswe/domains-sweden/domain"
+	"github.com/uberswe/domains-sweden/middleware"
+	"github.com/uberswe/domains-sweden/routes"
 	"golang.org/x/text/language"
 	"html/template"
 	"io/fs"
@@ -65,6 +66,9 @@ func Run() {
 		log.Fatalln(err)
 	}
 
+	domainService := domain.New(db)
+	go domainService.Poll()
+
 	// A gin Engine instance with the default configuration
 	r := gin.Default()
 
@@ -109,6 +113,7 @@ func Run() {
 	r.POST("/search", controller.Search)
 	r.Any("/search/:page", controller.Search)
 	r.Any("/search/:page/:query", controller.Search)
+	r.GET("/domains/:domain", controller.Domain)
 
 	// We define our 404 handler for when a page can not be found
 	r.NoRoute(controller.NoRoute)

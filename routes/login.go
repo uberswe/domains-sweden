@@ -3,9 +3,9 @@ package routes
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/uberswe/golang-base-project/middleware"
-	"github.com/uberswe/golang-base-project/models"
-	"github.com/uberswe/golang-base-project/ulid"
+	"github.com/uberswe/domains-sweden/middleware"
+	"github.com/uberswe/domains-sweden/models"
+	"github.com/uberswe/domains-sweden/ulid"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"

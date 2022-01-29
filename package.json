@@ -1,5 +1,5 @@
 {
-  "name": "golang-base-project",
+  "name": "domains-sweden",
   "version": "1.0.0",
   "description": "A base project with a Golang backend ready to handle user authentication.",
   "main": "index.js",

@@ -1,0 +1,32 @@
+{{ template "header.html" . }}
+
+<main class="flex-shrink-0">
+    <div class="container">
+        <h2 class="mt-5">{{ .Title }}</h2>
+        <p>{{ call .Trans "This domain was first seen by Domäner.xyz at" }} {{ .FirstSeen }}</p>
+        {{ if .HasReleaseAt }}
+            {{ call .Trans "This domain is pending delete and if it is not renewed it can be registered again after" }} {{ .ReleaseAt }} {{ call .Trans "at 04.00 UTC at the earliest" }}
+        {{ end }}
+        {{ if .HasNameservers }}
+           <h3>{{ call .Trans "Nameservers" }}</h3>
+        <table class="table table-hover table-sm" id="nameservers">
+            <thead>
+            <tr>
+                <th scope="col">{{ call .Trans "Nameserver" }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{ range $index, $ns := .Nameservers }}
+            <tr>
+                <td>
+                    <a href="/nameservers/{{ $ns.Host }}">{{ $ns.Host }}</a>
+                </td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+        {{ end }}
+    </div>
+</main>
+
+{{ template "footer.html" . }}

@@ -3,7 +3,8 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/uberswe/golang-base-project/models"
+	"github.com/uberswe/domains-sweden/models"
+	"golang.org/x/net/idna"
 	"log"
 	"net/http"
 	"net/url"
@@ -13,17 +14,22 @@ import (
 // SearchData holds additional data needed to render the search HTML page
 type SearchData struct {
 	PageData
-	Results []models.Website
+	Results []SearchDomain
 	Prev    bool
 	Next    bool
 	PrevURL string
 	NextURL string
 }
 
+type SearchDomain struct {
+	Host string
+	URL  string
+}
+
 // Search renders the search HTML page and any search results
 func (controller Controller) Search(c *gin.Context) {
 	page := 1
-	resultsPerPage := 5
+	resultsPerPage := 20
 	pdS := controller.DefaultPageData(c)
 	pdS.Title = pdS.Trans("Search")
 	pd := SearchData{
@@ -41,15 +47,14 @@ func (controller Controller) Search(c *gin.Context) {
 		}
 	}
 
-	var results []models.Website
+	var results []models.Domain
 
-	log.Println(search)
 	searchFilter := fmt.Sprintf("%s%s%s", "%", search, "%")
 	search2 := fmt.Sprintf("%s%s", "%", search)
 	search4 := fmt.Sprintf("%s%s", search, "%")
 
 	res := controller.db.
-		Raw(fmt.Sprintf("SELECT * FROM websites WHERE title LIKE ? OR description LIKE ? ORDER BY CASE WHEN title LIKE ? OR description LIKE ? THEN 1 WHEN title LIKE ? OR description LIKE ? THEN 2 WHEN title LIKE ? OR description LIKE ? THEN 4 ELSE 3 END LIMIT %d OFFSET %d", resultsPerPage, resultsPerPage*(page-1)), searchFilter, searchFilter, search, search, search2, search2, search4, search4).
+		Raw(fmt.Sprintf("SELECT * FROM domains WHERE host LIKE ? ORDER BY LENGTH(host), CASE WHEN host LIKE ? THEN 1 WHEN host LIKE ? THEN 2 WHEN host LIKE ? THEN 4 ELSE 3 END LIMIT %d OFFSET %d", resultsPerPage, resultsPerPage*(page-1)), searchFilter, search, search2, search4).
 		Find(&results)
 
 	if res.Error != nil || len(results) == 0 {
@@ -62,7 +67,14 @@ func (controller Controller) Search(c *gin.Context) {
 		return
 	}
 
-	pd.Results = results
+	for i := range results {
+		host, _ := idna.ToUnicode(results[i].Host)
+		pd.Results = append(pd.Results, SearchDomain{
+			Host: host,
+			URL:  fmt.Sprintf("/domains/%s", results[i].Host),
+		})
+	}
+
 	if len(pd.Results) >= resultsPerPage {
 		pd.Next = true
 		pd.NextURL = fmt.Sprintf("/search/%d/%s", page+1, url.QueryEscape(search))
