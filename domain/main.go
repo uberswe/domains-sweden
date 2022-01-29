@@ -309,3 +309,9 @@ func loadExpiringDomains(segment string) (data Response) {
 	}
 	return data
 }
+
+func Title(s string) string {
+	parts := strings.Split(s, ".")
+	parts[0] = strings.Title(strings.ToLower(parts[0]))
+	return strings.Join(parts, ".")
+}

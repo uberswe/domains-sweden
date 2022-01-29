@@ -1,0 +1,38 @@
+{{ template "header.html" . }}
+
+<main class="flex-shrink-0">
+    <div class="container">
+        <h2 class="mt-5">{{ .Title }}</h2>
+        <p>{{ call .Trans "This nameserver was first seen by Domäner.xyz at" }} {{ .FirstSeen }}</p>
+        {{ if .HasDomains }}
+           <h3>{{ call .Trans "Domains" }}</h3>
+        <table class="table table-hover table-sm" id="nameservers">
+            <thead>
+            <tr>
+                <th scope="col">{{ call .Trans "Domain" }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{ range $index, $d := .Domains }}
+            <tr>
+                <td>
+                    <a href="{{ $d.URL }}">{{ $d.Host }}</a>
+                </td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{ if .Prev }}
+            <a href="{{ .PrevURL }}">{{ call .Trans "Previous" }}</a>
+            {{ end }}
+            {{ if and .Prev .Next }} | {{ end }}
+            {{ if .Next }}
+            <a href="{{ .NextURL }}">{{ call .Trans "Next" }}</a>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</main>
+
+{{ template "footer.html" . }}

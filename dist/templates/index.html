@@ -2,9 +2,63 @@
 
 <main class="flex-shrink-0">
     <div class="container">
-        <h1 class="mt-5">{{ call .Trans "site_name" }}</h1>
-        <p class="lead">{{ call .Trans "A simple website with user login and registration." }} {{ call .Trans "The frontend uses" }} <a href="https://getbootstrap.com/docs/5.0/getting-started/introduction/">Bootstrap 5</a> {{ call .Trans "and the backend is written in" }} <a href="https://go.dev/">Go</a>.</p>
-        <p>{{ call .Trans "Read more about this project on" }} <a href="https://github.com/uberswe/domains-sweden">GitHub</a>.</p>
+        <div class="row pb-5 pt-5">
+            <div class="col">
+                <h2>{{ call .Trans "Search through all Swedish .SE and .NU domains" }}</h2>
+                <form method="post" action="/search" class="d-flex">
+                    <input name="search" class="form-control me-2" type="search" placeholder="{{ call .Trans "Search" }}" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">{{ call .Trans "Search" }}</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h3>Domains that may be released soon</h3>
+                <table class="table table-hover table-sm" id="expiring-soon">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ call .Trans "Domain" }}</th>
+                        <th scope="col">{{ call .Trans "Release Date" }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{ range $index, $d := .Domains }}
+                    <tr>
+                        <td>
+                            <a href="{{ $d.URL }}">{{ $d.Host }}</a>
+                        </td>
+                        <td>
+                            {{ $d.ReleasesAt }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <h3>The most popular nameservers</h3>
+                <table class="table table-hover table-sm" id="popular-nameservers">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ call .Trans "Nameserver" }}</th>
+                        <th scope="col">{{ call .Trans "Domains" }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{ range $index, $ns := .Nameservers }}
+                    <tr>
+                        <td>
+                            <a href="{{ $ns.URL }}">{{ $ns.Host }}</a>
+                        </td>
+                        <td>
+                            {{ $ns.Count }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </main>
 

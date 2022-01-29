@@ -114,6 +114,8 @@ func Run() {
 	r.Any("/search/:page", controller.Search)
 	r.Any("/search/:page/:query", controller.Search)
 	r.GET("/domains/:domain", controller.Domain)
+	r.GET("/nameservers/:nameserver", controller.Nameserver)
+	r.GET("/nameservers/:nameserver/:page", controller.Nameserver)
 
 	// We define our 404 handler for when a page can not be found
 	r.NoRoute(controller.NoRoute)

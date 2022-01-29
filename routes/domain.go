@@ -2,10 +2,10 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	domainservice "github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/models"
 	"golang.org/x/net/idna"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -35,7 +35,7 @@ func (controller Controller) Domain(c *gin.Context) {
 
 	hash, _ := idna.ToUnicode(domainModel.Host)
 
-	dpd.Title = strings.Title(hash)
+	dpd.Title = domainservice.Title(hash)
 	pd := DomainPageData{
 		PageData:    dpd,
 		FirstSeen:   domainModel.CreatedAt.Format("2006-01-02"),
