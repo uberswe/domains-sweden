@@ -180,7 +180,7 @@ func (s *Service) load() map[string]Domain {
 		return nil
 	}
 
-	if fetch.ID == 0 || time.Now().Add(-12*time.Hour).After(fetch.CreatedAt) {
+	if fetch.ID == 0 || time.Now().Add(-6*time.Hour).After(fetch.CreatedAt) {
 		data := loadExpiringDomains("se")
 		fetch.ReleasingSEDomains = len(data.Data)
 		nuData := loadExpiringDomains("nu")
