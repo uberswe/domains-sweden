@@ -53,7 +53,7 @@ func (controller Controller) Index(c *gin.Context) {
 			Joins("left join domain_releases on domain_releases.domain_id = domains.id").
 			Joins("left join releases on domain_releases.release_id = releases.id").
 			Where("releases.released_at > NOW()").
-			Order("LENGTH(domains.host)").
+			Order("domains.id ASC").
 			Order("releases.released_at ASC").
 			Offset(50).
 			Limit(20).
@@ -77,10 +77,9 @@ func (controller Controller) Index(c *gin.Context) {
 		}
 
 		res = controller.db.Model(&models.Nameserver{}).
-			Select("nameservers.host, COUNT(domains.id) AS count").
+			Select("nameservers.host, COUNT(domain_nameservers.domain_id) AS count").
 			Joins("left join domain_nameservers on domain_nameservers.nameserver_id = nameservers.id").
-			Joins("left join domains on domain_nameservers.domain_id = domains.id").
-			Order("COUNT(domains.id) DESC").
+			Order("COUNT(domain_nameservers.domain_id) DESC").
 			Limit(20).
 			Group("nameservers.host").
 			Find(&nameservers)

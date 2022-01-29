@@ -1,0 +1,30 @@
+{{ template "header.html" . }}
+
+<main class="flex-shrink-0">
+    <div class="container">
+        <h2>The most popular nameservers</h2>
+        <table class="table table-hover table-sm" id="popular-nameservers">
+            <thead>
+            <tr>
+                <th scope="col">{{ call .Trans "Nameserver" }}</th>
+                <th scope="col">{{ call .Trans "Domains" }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{ range $index, $ns := .Nameservers }}
+            <tr>
+                <td>
+                    <a href="{{ $ns.URL }}">{{ $ns.Host }}</a>
+                </td>
+                <td>
+                    {{ $ns.Count }}
+                </td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+        {{ template "pagination.html" . }}
+    </div>
+</main>
+
+{{ template "footer.html" . }}

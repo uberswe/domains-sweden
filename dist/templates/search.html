@@ -2,22 +2,25 @@
 
 <main class="flex-shrink-0">
     <div class="container">
-        <h1 class="mt-5">{{ call .Trans "Search Results" }}</h1>
+        <h2 class="mt-5">{{ call .Trans "Search Results" }}</h2>
         {{ template "messages.html" . }}
-        {{ range $result := .Results }}
-        <div class="search-result">
-            <h3><a href="{{ $result.URL }}">{{ $result.Host }}</a></h3>
-        </div>
-        {{ end }}
-        <div class="pagination">
-        {{ if .Prev }}
-        <a href="{{ .PrevURL }}">{{ call .Trans "Previous" }}</a>
-        {{ end }}
-            {{ if and .Prev .Next }} | {{ end }}
-        {{ if .Next }}
-        <a href="{{ .NextURL }}">{{ call .Trans "Next" }}</a>
-        {{ end }}
-        </div>
+        <table class="table table-hover table-sm" id="search-results">
+            <thead>
+            <tr>
+                <th scope="col">{{ call .Trans "Domain" }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{ range $result := .Results }}
+            <tr>
+                <td>
+                    <a href="{{ $result.URL }}">{{ $result.Host }}</a>
+                </td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+        {{ template "pagination.html" . }}
     </div>
 </main>
 

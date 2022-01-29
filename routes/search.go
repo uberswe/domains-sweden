@@ -29,7 +29,7 @@ type SearchDomain struct {
 // Search renders the search HTML page and any search results
 func (controller Controller) Search(c *gin.Context) {
 	page := 1
-	resultsPerPage := 20
+	resultsPerPage := 50
 	pdS := controller.DefaultPageData(c)
 	pdS.Title = pdS.Trans("Search")
 	pd := SearchData{

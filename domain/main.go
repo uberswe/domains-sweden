@@ -50,7 +50,7 @@ func New(db *gorm.DB) *Service {
 func (s *Service) Poll() {
 	// Call every 6 hours in a thread
 	s.run()
-	for range time.Tick(time.Hour * 6) {
+	for range time.Tick(time.Hour * 1) {
 		s.run()
 	}
 }
@@ -180,7 +180,7 @@ func (s *Service) load() map[string]Domain {
 		return nil
 	}
 
-	if fetch.ID == 0 || time.Now().Add(-6*time.Hour).After(fetch.CreatedAt) {
+	if fetch.ID == 0 || time.Now().Add(-12*time.Hour).After(fetch.CreatedAt) {
 		data := loadExpiringDomains("se")
 		fetch.ReleasingSEDomains = len(data.Data)
 		nuData := loadExpiringDomains("nu")
@@ -287,7 +287,7 @@ func loadExpiringDomains(segment string) (data Response) {
 		log.Fatal(err)
 	}
 
-	req.Header.Set("User-Agent", "domäner.xyz parser, contact m@rkus.io in case of abuse.")
+	req.Header.Set("User-Agent", "domäner.xyz parser, contact web@domaner.xyz in case of abuse. Also available on Github https://github.com/uberswe/domains-sweden")
 
 	res, getErr := client.Do(req)
 	if getErr != nil {
