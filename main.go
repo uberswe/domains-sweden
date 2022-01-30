@@ -96,14 +96,19 @@ func Run() {
 	// All requests to /assets will use the sub fil system which contains all our static assets
 	assets.StaticFS("/", http.FS(subFS))
 
+	// A new instance of the routes controller is created
+	controller := routes.New(db, conf, bundle)
+
+	r.GET("/sitemap.xml", controller.Sitemap)
+	r.GET("/sitemap/default/sitemap.xml", controller.SitemapDefault)
+	r.GET("/sitemap/domains/:page/sitemap.xml", controller.SitemapDomains)
+	r.GET("/sitemap/nameservers/:page/sitemap.xml", controller.SitemapNameservers)
+
 	// Session middleware is applied to all groups after this point.
 	r.Use(middleware.Session(db))
 
 	// A General middleware is defined to add default headers to improve site security
 	r.Use(middleware.General())
-
-	// A new instance of the routes controller is created
-	controller := routes.New(db, conf, bundle)
 
 	// Any request to / will call controller.Index
 	r.GET("/", controller.Index)

@@ -181,22 +181,23 @@ func (s *Service) load() map[string]Domain {
 	}
 
 	if fetch.ID == 0 || time.Now().Add(-6*time.Hour).After(fetch.CreatedAt) {
+		var fetchNew models.Fetch
 		data := loadExpiringDomains("se")
-		fetch.ReleasingSEDomains = len(data.Data)
+		fetchNew.ReleasingSEDomains = len(data.Data)
 		nuData := loadExpiringDomains("nu")
-		fetch.ReleasingNUDomains = len(data.Data)
+		fetchNew.ReleasingNUDomains = len(data.Data)
 		data.Data = append(data.Data, nuData.Data...)
 		data.Domains = loadActiveDomains("se")
-		fetch.ActiveSEDomains = len(data.Domains)
+		fetchNew.ActiveSEDomains = len(data.Domains)
 		nuDomainMap := loadActiveDomains("nu")
-		fetch.ActiveNUDomains = len(nuDomainMap)
+		fetchNew.ActiveNUDomains = len(nuDomainMap)
 		for i, d := range nuDomainMap {
 			data.Domains[i] = d
 		}
 		log.Println("Loaded domains from iis.se", len(data.Domains), len(data.Data))
-		fetch.ActiveDomains = fetch.ActiveSEDomains + fetch.ActiveNUDomains
-		fetch.ReleasingDomains = fetch.ReleasingSEDomains + fetch.ReleasingNUDomains
-		res = s.DB.Save(&fetch)
+		fetchNew.ActiveDomains = fetchNew.ActiveSEDomains + fetchNew.ActiveNUDomains
+		fetchNew.ReleasingDomains = fetchNew.ReleasingSEDomains + fetchNew.ReleasingNUDomains
+		res = s.DB.Save(&fetchNew)
 		if res.Error != nil {
 			log.Println(res.Error)
 			return nil
