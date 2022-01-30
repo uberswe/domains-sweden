@@ -80,7 +80,7 @@ func (s *Service) run() {
 							release := models.Release{
 								ReleasedAt: &parse,
 							}
-							res := tx.Where(release).First(&release)
+							res := s.DB.Model(&models.Release{}).Where(release).First(&release)
 							if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
 								log.Println(res.Error)
 								return res.Error
@@ -107,7 +107,7 @@ func (s *Service) run() {
 							nameserver := models.Nameserver{
 								Host: ns.Domain,
 							}
-							res := tx.Where(nameserver).First(&nameserver)
+							res := s.DB.Model(&models.Nameserver{}).Where(nameserver).First(&nameserver)
 							if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
 								log.Println(res.Error)
 								return res.Error

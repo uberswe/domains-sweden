@@ -6,6 +6,7 @@ import (
 	"github.com/uberswe/domains-sweden/models"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -77,9 +78,13 @@ func (controller Controller) TopNameservers(c *gin.Context) {
 			tnpd.Nameservers = append(tnpd.Nameservers, IndexNameserver{
 				Host:  ns.Host,
 				URL:   fmt.Sprintf("/domainNameservers/%s", ns.Host),
-				Count: fmt.Sprintf("%d", count),
+				Count: int64(count),
 			})
 		}
+
+		sort.Slice(tnpd.Nameservers, func(i, j int) bool {
+			return tnpd.Nameservers[i].Count > tnpd.Nameservers[j].Count
+		})
 
 		if len(tnpd.Nameservers) >= perPage {
 			tnpd.Next = true

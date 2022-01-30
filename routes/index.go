@@ -6,6 +6,7 @@ import (
 	"github.com/uberswe/domains-sweden/models"
 	"log"
 	"net/http"
+	"sort"
 	"time"
 )
 
@@ -24,7 +25,7 @@ type IndexDomain struct {
 type IndexNameserver struct {
 	Host  string
 	URL   string
-	Count string
+	Count int64
 }
 
 type IndexCache struct {
@@ -106,10 +107,13 @@ func (controller Controller) Index(c *gin.Context) {
 			}
 			ipd.Nameservers = append(ipd.Nameservers, IndexNameserver{
 				Host:  ns.Host,
-				URL:   fmt.Sprintf("/domainNameservers/%s", ns.Host),
-				Count: fmt.Sprintf("%d", count),
+				URL:   fmt.Sprintf("/nameservers/%s", ns.Host),
+				Count: int64(count),
 			})
 		}
+		sort.Slice(ipd.Nameservers, func(i, j int) bool {
+			return ipd.Nameservers[i].Count > ipd.Nameservers[j].Count
+		})
 		indexCache.IndexData = ipd
 		indexCache.Cached = time.Now()
 	} else {
