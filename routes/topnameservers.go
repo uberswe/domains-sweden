@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/uberswe/domains-sweden/models"
 	"log"
 	"net/http"
 	"strconv"
@@ -38,30 +39,45 @@ func (controller Controller) TopNameservers(c *gin.Context) {
 
 	tnpd := TopNameserversData{}
 
-	var nameservers []struct {
-		Host  string
-		Count int
+	var domainNameservers []struct {
+		NameserverID int
+		Count        int
 	}
 
 	if _, ok := topNameserverDataCache[page]; page > 10 || !ok || topNameserverDataCache[page].Cached.Before(time.Now().Add(-6*time.Hour)) {
 
 		res := controller.db.Table("domain_nameservers").
-			Select("nameservers.host, COUNT(domain_nameservers.domain_id) AS count").
-			Joins("left join nameservers on domain_nameservers.nameserver_id = nameservers.id").
+			Select("domain_nameservers.nameserver_id, COUNT(domain_nameservers.domain_id) AS count").
 			Order("COUNT(domain_nameservers.domain_id) DESC").
 			Offset(perPage * (page - 1)).Limit(perPage).
-			Group("nameservers.host").
-			Find(&nameservers)
+			Group("domain_nameservers.nameserver_id").
+			Find(&domainNameservers)
 
 		if res.Error != nil {
 			log.Println(res.Error)
 		}
 
+		var nameservers []models.Nameserver
+
+		var nsIds []int
+
+		for _, dns := range domainNameservers {
+			nsIds = append(nsIds, dns.NameserverID)
+		}
+
+		controller.db.Find(&nameservers, nsIds)
+
 		for _, ns := range nameservers {
+			count := 0
+			for _, dn := range domainNameservers {
+				if dn.NameserverID == int(ns.ID) {
+					count = dn.Count
+				}
+			}
 			tnpd.Nameservers = append(tnpd.Nameservers, IndexNameserver{
 				Host:  ns.Host,
-				URL:   fmt.Sprintf("/nameservers/%s", ns.Host),
-				Count: fmt.Sprintf("%d", ns.Count),
+				URL:   fmt.Sprintf("/domainNameservers/%s", ns.Host),
+				Count: fmt.Sprintf("%d", count),
 			})
 		}
 

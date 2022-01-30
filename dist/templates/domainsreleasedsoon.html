@@ -23,15 +23,7 @@
             {{ end }}
             </tbody>
         </table>
-        <div class="pagination">
-            {{ if .Prev }}
-            <a href="{{ .PrevURL }}">{{ call .Trans "Previous" }}</a>
-            {{ end }}
-            {{ if and .Prev .Next }} | {{ end }}
-            {{ if .Next }}
-            <a href="{{ .NextURL }}">{{ call .Trans "Next" }}</a>
-            {{ end }}
-        </div>
+        {{ template "pagination.html" . }}
     </div>
 </main>
 

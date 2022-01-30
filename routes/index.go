@@ -71,28 +71,43 @@ func (controller Controller) Index(c *gin.Context) {
 			})
 		}
 
-		var nameservers []struct {
-			Host  string
-			Count int
+		var domainNameservers []struct {
+			NameserverID int
+			Count        int
 		}
 
-		res = controller.db.Model(&models.Nameserver{}).
-			Select("nameservers.host, COUNT(domain_nameservers.domain_id) AS count").
-			Joins("left join domain_nameservers on domain_nameservers.nameserver_id = nameservers.id").
+		res = controller.db.Table("domain_nameservers").
+			Select("domain_nameservers.nameserver_id, COUNT(domain_nameservers.domain_id) AS count").
 			Order("COUNT(domain_nameservers.domain_id) DESC").
 			Limit(20).
-			Group("nameservers.host").
-			Find(&nameservers)
+			Group("domain_nameservers.nameserver_id").
+			Find(&domainNameservers)
 
 		if res.Error != nil {
 			log.Println(res.Error)
 		}
 
+		var nameservers []models.Nameserver
+
+		var nsIds []int
+
+		for _, dns := range domainNameservers {
+			nsIds = append(nsIds, dns.NameserverID)
+		}
+
+		controller.db.Find(&nameservers, nsIds)
+
 		for _, ns := range nameservers {
+			count := 0
+			for _, dn := range domainNameservers {
+				if dn.NameserverID == int(ns.ID) {
+					count = dn.Count
+				}
+			}
 			ipd.Nameservers = append(ipd.Nameservers, IndexNameserver{
 				Host:  ns.Host,
-				URL:   fmt.Sprintf("/nameservers/%s", ns.Host),
-				Count: fmt.Sprintf("%d", ns.Count),
+				URL:   fmt.Sprintf("/domainNameservers/%s", ns.Host),
+				Count: fmt.Sprintf("%d", count),
 			})
 		}
 		indexCache.IndexData = ipd
