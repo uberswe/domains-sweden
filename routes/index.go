@@ -49,13 +49,12 @@ func (controller Controller) Index(c *gin.Context) {
 			ReleasedAt time.Time
 		}
 
-		res := controller.db.Model(&models.Domain{}).
+		res := controller.db.Model(&models.Release{}).
 			Select("domains.host, releases.released_at").
-			Joins("left join domain_releases on domain_releases.domain_id = domains.id").
-			Joins("left join releases on domain_releases.release_id = releases.id").
+			Joins("left join domain_releases on domain_releases.release_id = releases.id").
+			Joins("left join domains on domain_releases.domain_id = domains.id").
 			Where("releases.released_at > NOW()").
 			Order("domains.id ASC").
-			Order("releases.released_at ASC").
 			Offset(50).
 			Limit(20).
 			Find(&domains)
@@ -72,16 +71,11 @@ func (controller Controller) Index(c *gin.Context) {
 			})
 		}
 
-		var domainNameservers []struct {
-			NameserverID int
-			Count        int
-		}
+		var domainNameservers []models.NameserverAggregate
 
-		res = controller.db.Table("domain_nameservers").
-			Select("domain_nameservers.nameserver_id, COUNT(domain_nameservers.domain_id) AS count").
-			Order("COUNT(domain_nameservers.domain_id) DESC").
+		res = controller.db.Model(models.NameserverAggregate{}).
+			Order("count DESC").
 			Limit(20).
-			Group("domain_nameservers.nameserver_id").
 			Find(&domainNameservers)
 
 		if res.Error != nil {

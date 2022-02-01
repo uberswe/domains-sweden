@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -117,7 +118,7 @@ func (s *Service) run() {
 						}
 					}
 					if updated {
-						tx.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&result)
+						s.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&result)
 					}
 					d.Processed = true
 					data[result.Host] = d
@@ -169,6 +170,70 @@ func (s *Service) run() {
 		}
 	}
 
+	// Aggregate nameservers
+
+	var domainNameservers []struct {
+		NameserverID int
+		Count        int
+	}
+
+	log.Println("aggregating nameserver counts")
+	res := s.DB.Table("domain_nameservers").
+		Select("domain_nameservers.nameserver_id, COUNT(domain_nameservers.domain_id) AS Count").
+		Group("domain_nameservers.nameserver_id").
+		Find(&domainNameservers)
+
+	if res.Error != nil {
+		log.Println(res.Error)
+	}
+
+	for _, dn := range domainNameservers {
+		ns := models.NameserverAggregate{
+			NameserverID: dn.NameserverID,
+		}
+
+		res = s.DB.Where(ns).First(&ns)
+		if res.Error != nil {
+			log.Println(res.Error)
+		}
+		ns.Count = dn.Count
+
+		s.DB.Save(&ns)
+	}
+	// remove duplicate domains
+	var domains []struct {
+		IDs   string
+		Host  string
+		Count int64
+	}
+
+	log.Println("removing duplicate domains")
+	res = s.DB.Raw("SELECT GROUP_CONCAT(id) AS ids, host, COUNT(*) AS count FROM domains GROUP BY host HAVING count > 1;").Find(&domains)
+	if res.Error != nil {
+		log.Println(res.Error)
+	}
+
+	for _, d := range domains {
+		log.Println("domains", d.IDs, "Host", d.Host, "Count", d.Count)
+		idParts := strings.Split(d.IDs, ",")
+		for i, p := range idParts {
+			if i != 0 {
+				dModel := models.Domain{}
+				if pi, err := strconv.Atoi(p); err == nil {
+					dModel.ID = uint(pi)
+					err = s.DB.Model(&dModel).Association("Nameservers").Clear()
+					if err != nil {
+						log.Println(err)
+					}
+					res = s.DB.Unscoped().Delete(&dModel)
+					if res.Error != nil {
+						log.Println(res.Error)
+					}
+				}
+			}
+		}
+	}
+	log.Println("hourly update complete")
 }
 
 func (s *Service) load() map[string]Domain {

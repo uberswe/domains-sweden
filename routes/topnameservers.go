@@ -40,18 +40,13 @@ func (controller Controller) TopNameservers(c *gin.Context) {
 
 	tnpd := TopNameserversData{}
 
-	var domainNameservers []struct {
-		NameserverID int
-		Count        int
-	}
+	var domainNameservers []models.NameserverAggregate
 
 	if _, ok := topNameserverDataCache[page]; page > 10 || !ok || topNameserverDataCache[page].Cached.Before(time.Now().Add(-6*time.Hour)) {
 
-		res := controller.db.Table("domain_nameservers").
-			Select("domain_nameservers.nameserver_id, COUNT(domain_nameservers.domain_id) AS count").
-			Order("COUNT(domain_nameservers.domain_id) DESC").
+		res := controller.db.Model(models.NameserverAggregate{}).
+			Order("count DESC").
 			Offset(perPage * (page - 1)).Limit(perPage).
-			Group("domain_nameservers.nameserver_id").
 			Find(&domainNameservers)
 
 		if res.Error != nil {
