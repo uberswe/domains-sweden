@@ -1,7 +1,7 @@
 {
   "name": "domains-sweden",
   "version": "1.0.0",
-  "description": "A base project with a Golang backend ready to handle user authentication.",
+  "description": "A project for searching all swedish .nu and .se domains.",
   "main": "index.js",
   "private": true,
   "scripts": {

@@ -15,7 +15,7 @@ func loadEnvVariables() (c config.Config) {
 		c.Port = os.Getenv("PORT")
 	}
 
-	c.BaseURL = "https://golangbase.com/"
+	c.BaseURL = "https://www.xn--domner-dua.xyz/"
 	if os.Getenv("BASE_URL") != "" {
 		c.BaseURL = os.Getenv("BASE_URL")
 	}

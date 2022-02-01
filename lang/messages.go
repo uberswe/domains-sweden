@@ -7,7 +7,7 @@ import (
 var translationMessages = []i18n.Message{
 	{
 		ID:    "site_name",
-		Other: "Golang Base Project",
+		Other: "Domäner.xyz",
 	},
 	{
 		ID:    "home",

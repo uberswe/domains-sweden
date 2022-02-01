@@ -255,8 +255,8 @@ hash = "sha1-6e9eadd95dac35575c8f4be15ab3bf770c2f2808"
 other = "Se alla domäner som släpps snart"
 
 [site_name]
-hash = "sha1-ffe1d232b4c4a3aaa1070a9c1fb4bf5cf0ea650d"
-other = "Golang Base Project"
+hash = "sha1-8539c7eccb86267e841b8d78047cd28d6e7c4c7b"
+other = "Domäner.xyz"
 
 [user_activation]
 hash = "sha1-065b4495daa8deaa8b7faad2c855f786bdb9e8ee"
