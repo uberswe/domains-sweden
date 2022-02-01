@@ -42,9 +42,37 @@ other = "Skapad av"
 hash = "sha1-cd2bf2ee8212e8af2ba8d2b47153c7ca383adf80"
 other = "Du har nu en autentiserad session, du kan logga ut med länken i navigeringsfältet ovan."
 
+[domain]
+hash = "sha1-9b10914d8b0a097ace7176e8973f5c3dee92bb44"
+other = "Domän"
+
+[domain_first_seen]
+hash = "sha1-132bbe6fa8a7a2c2a7914dc8a9cd92ce6697f050"
+other = "Denna domän sågs först av Domäner.xyz på"
+
+[domain_release_at_1]
+hash = "sha1-d89f05ebb86f4f9755961ed81be23775bac0f2b7"
+other = "Denna domän kommer snart att frisläppas. Om den inte förnyas kan den registreras igen efter"
+
+[domain_release_at_2]
+hash = "sha1-e5cac04ea4ff7ced0b5d80581356b9658dedc297"
+other = "tidigast 04.00 UTC"
+
+[domains]
+hash = "sha1-a0d641b3f1afe93a0323a0128a013778c7d8ae93"
+other = "Domäner"
+
+[earliest_availability_date]
+hash = "sha1-2d537d9f88d2f27b68c1b371177f26e08f2263a6"
+other = "Tidigaste tillgänglighetsdatum"
+
 [email_address]
 hash = "sha1-c94d3175a6560565410511df2cebab9cda96027e"
 other = "E-postadress"
+
+[expired_message]
+hash = "sha1-151dff6743d90acc47ed5287412b8d2a0ac20280"
+other = "Utgångna domäner som kan bli tillgängliga snart"
 
 [footer_message_1]
 hash = "sha1-14d277545460f1796542547a5cf2151fc433f917"
@@ -106,6 +134,26 @@ other = "Genom att trycka på knappen nedan för att logga in godkänner du anv�
 hash = "sha1-e43d612e11f1568f2373e719d4c4b08dcecdc7cc"
 other = "Logga ut"
 
+[most_popular_nameservers]
+hash = "sha1-497ee4331fcc9ab57a6894182dc384c3ce054f3f"
+other = "De mest populära namnservrarna"
+
+[nameserver]
+hash = "sha1-66453ab8d1b57dce0281ac3906642ffec31f47d0"
+other = "Namnserver"
+
+[nameserver_message]
+hash = "sha1-7fe5d79e52cfdefda654017ba41b119ca269eca7"
+other = "Denna namnserver sågs först av Domäner.xyz på"
+
+[nameservers]
+hash = "sha1-400c3476c738eefb94528ac0d99970ee7cad1461"
+other = "Namnservrar"
+
+[next]
+hash = "sha1-bc981983e7f547dc62e19a1e383acfe00782a6d5"
+other = "Nästa"
+
 [no_results_found]
 hash = "sha1-658e79f9dc7fca34dc164cbb79e1c0be3cdebf23"
 other = "Inga resultat hittades"
@@ -129,6 +177,10 @@ other = "Använd följande länk för att återställa ditt lösenord. Om detta 
 [password_reset_success]
 hash = "sha1-e9d5c887a57a274b7b839b8109625c324f3d6536"
 other = "Ditt lösenord har återställts."
+
+[previous]
+hash = "sha1-50f94286ba30706a19070d3ec0a0c8d34d6cf6eb"
+other = "Föregående"
 
 [register]
 hash = "sha1-d672995a14650d0e018026b64f297663d8c71c8d"
@@ -186,9 +238,21 @@ other = "Vänligen ange ett nytt lösenord."
 hash = "sha1-bce06414177f72ab70e6387b6af9f8ceef0d6049"
 other = "Sök"
 
+[search_all_domains]
+hash = "sha1-348785b6fce69ee72e5c585846e97bdea5a91968"
+other = "Sök Bland Alla Svenska .SE Och .NU Domäner"
+
 [search_results]
 hash = "sha1-5e054413dacd642ddacc8f8ec146442bea000086"
 other = "Sökresultat"
+
+[see_all_nameservers]
+hash = "sha1-e3cf3e917a87cd12075bf5fb4c7f3f224b7497e9"
+other = "Se alla namnservrar"
+
+[see_all_release_domains]
+hash = "sha1-6e9eadd95dac35575c8f4be15ab3bf770c2f2808"
+other = "Se alla domäner som släpps snart"
 
 [site_name]
 hash = "sha1-ffe1d232b4c4a3aaa1070a9c1fb4bf5cf0ea650d"

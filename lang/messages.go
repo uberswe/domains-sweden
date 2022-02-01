@@ -233,4 +233,68 @@ var translationMessages = []i18n.Message{
 		ID:    "reset_password_message",
 		Other: "Please enter a new password.",
 	},
+	{
+		ID:    "domain_first_seen",
+		Other: "This domain was first seen by Domäner.xyz at",
+	},
+	{
+		ID:    "domain_release_at_1",
+		Other: "This domain is pending delete and if it is not renewed it can be registered again after",
+	},
+	{
+		ID:    "domain_release_at_2",
+		Other: "at 04.00 UTC at the earliest",
+	},
+	{
+		ID:    "nameservers",
+		Other: "Nameservers",
+	},
+	{
+		ID:    "expired_message",
+		Other: "Expired Domains that may become available soon",
+	},
+	{
+		ID:    "domain",
+		Other: "Domain",
+	},
+	{
+		ID:    "domains",
+		Other: "Domains",
+	},
+	{
+		ID:    "earliest_availability_date",
+		Other: "Earliest Availability Date",
+	},
+	{
+		ID:    "nameserver_message",
+		Other: "This nameserver was first seen by Domäner.xyz at",
+	},
+	{
+		ID:    "previous",
+		Other: "Previous",
+	},
+	{
+		ID:    "next",
+		Other: "Next",
+	},
+	{
+		ID:    "nameserver",
+		Other: "Nameserver",
+	},
+	{
+		ID:    "most_popular_nameservers",
+		Other: "The most popular nameservers",
+	},
+	{
+		ID:    "search_all_domains",
+		Other: "Search All Swedish .SE And .NU Domains",
+	},
+	{
+		ID:    "see_all_release_domains",
+		Other: "See all domains being released soon",
+	},
+	{
+		ID:    "see_all_nameservers",
+		Other: "See all nameservers",
+	},
 }

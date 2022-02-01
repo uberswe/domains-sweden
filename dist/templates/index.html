@@ -11,9 +11,9 @@
                 </form>
             </div>
         </div>
-        <div class="row">
+        <div class="row pb-5">
             <div class="col">
-                <h3>Expired Domains that may become available soon</h3>
+                <h3>{{ call .Trans "Expired Domains that may become available soon" }}</h3>
                 <table class="table table-hover table-sm" id="expiring-soon">
                     <thead>
                     <tr>
@@ -34,10 +34,10 @@
                     {{ end }}
                     </tbody>
                 </table>
-                <a href="/domains-released-soon">{{ call .Trans "See all domains being released soon" }}</a>
+                <a class="btn btn-primary" href="/domains-released-soon">{{ call .Trans "See all domains being released soon" }}</a>
             </div>
             <div class="col">
-                <h3>The most popular nameservers</h3>
+                <h3>{{ call .Trans "The most popular nameservers" }}</h3>
                 <table class="table table-hover table-sm" id="popular-nameservers">
                     <thead>
                     <tr>
@@ -58,7 +58,7 @@
                     {{ end }}
                     </tbody>
                 </table>
-                <a href="/top-nameservers">{{ call .Trans "See all nameservers" }}</a>
+                <a class="btn btn-primary" href="/top-nameservers">{{ call .Trans "See all nameservers" }}</a>
             </div>
         </div>
     </div>
