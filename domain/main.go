@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/miekg/dns"
 	"github.com/uberswe/domains-sweden/models"
+	"github.com/uberswe/domains-sweden/sitemap"
 	"golang.org/x/net/idna"
 	"gorm.io/gorm"
 	"io/ioutil"
@@ -233,6 +234,9 @@ func (s *Service) run() {
 			}
 		}
 	}
+	log.Println("generating sitemaps")
+	sitemapService := sitemap.New(s.DB)
+	sitemapService.GenerateAllSitemaps()
 	log.Println("hourly update complete")
 }
 
