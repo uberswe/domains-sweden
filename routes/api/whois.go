@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/uberswe/domains-sweden/whois"
 	"net/http"
+	"strings"
 )
 
 type WhoisRequest struct {
@@ -18,6 +19,10 @@ func (controller Controller) Whois(c *gin.Context) {
 	var request WhoisRequest
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+	if !strings.HasSuffix(request.Domain, ".se") && !strings.HasSuffix(request.Domain, ".nu") {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}

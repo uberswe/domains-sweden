@@ -115,6 +115,7 @@ func Run() {
 	r.GET("/", controller.Index)
 
 	// We want to handle both POST and GET requests on the /search route. We define both but use the same function to handle the requests.
+	r.GET("/whois", controller.Whois)
 	r.GET("/search", controller.Search)
 	r.POST("/search", controller.Search)
 	r.Any("/search/:page", controller.Search)

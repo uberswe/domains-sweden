@@ -1,0 +1,50 @@
+{{ template "header.html" . }}
+
+<main class="flex-shrink-0">
+    <div class="container">
+        <div class="row pb-5 mt-5">
+            <div class="col">
+                <h2>{{ call .Trans "WHOIS Lookup" }}</h2>
+                <form class="d-flex">
+                    <input id="whois-search" name="whois-search" placeholder='{{ call .Trans "Enter a domain name" }}' class="form-control me-2" type="search">
+                    <button id="whois-button" class="btn btn-primary">{{ call .Trans "Request WHOIS Lookup" }}</button>
+                </form>
+                <div class="mt-2" id="whois-result">
+                </div>
+            </div>
+        </div>
+        </div>
+        <script>
+            function whois() {
+                let whoisButton = document.getElementById("whois-button")
+                whoisButton.addEventListener('click', function (e) {
+                    whoisButton.disabled = true
+                    whoisButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\n' +
+                        'Loading...'
+                    let whoisInput = document.getElementById("whois-search")
+                    let whoisSection = document.getElementById("whois-result")
+                    let data = {
+                        domain: whoisInput.value,
+                    }
+                    fetch('/api/1.0/whois', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    }).then(response => response.json()).then(data => {
+                        whoisButton.disabled = false
+                        whoisButton.innerHTML = '{{ call .Trans "Request WHOIS Lookup" }}'
+                        whoisSection.innerText = data.raw
+                    }).catch((error) => {
+                        console.error('Error:', error);
+                    });
+                })
+            }
+
+            whois()
+        </script>
+    </div>
+</main>
+
+{{ template "footer.html" . }}
