@@ -52,8 +52,15 @@ func (controller Controller) Nameserver(c *gin.Context) {
 
 	var domains []models.Domain
 
-	err := controller.db.Model(&nameserverModel).Order("id ASC").Offset(perPage * (page - 1)).Limit(perPage).Association("Domains").Find(&domains)
-	if err != nil && err != gorm.ErrRecordNotFound {
+	res = controller.db.Table("domain_nameservers").Unscoped().
+		Where("domain_nameservers.nameserver_id = ?", nameserverModel.ID).
+		Order("domain_nameservers.domain_id ASC").
+		Offset(perPage * (page - 1)).
+		Limit(perPage).
+		Joins("LEFT JOIN domains ON domains.id = domain_nameservers.domain_id").
+		Select("domains.*").
+		Find(&domains)
+	if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
 		c.HTML(http.StatusNotFound, "404.html", dpd)
 		return
 	}
