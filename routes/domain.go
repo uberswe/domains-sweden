@@ -51,5 +51,6 @@ func (controller Controller) Domain(c *gin.Context) {
 			break
 		}
 	}
+
 	c.HTML(http.StatusOK, "domain.html", pd)
 }

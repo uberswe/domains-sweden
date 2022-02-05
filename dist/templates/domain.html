@@ -2,30 +2,74 @@
 
 <main class="flex-shrink-0">
     <div class="container">
-        <h2 class="mt-5">{{ .Title }}</h2>
-        <p>{{ call .Trans "This domain was first seen by Domäner.xyz at" }} {{ .FirstSeen }}</p>
-        {{ if .HasReleaseAt }}
-            {{ call .Trans "This domain is pending delete and if it is not renewed it can be registered again after" }} {{ .ReleaseAt }} {{ call .Trans "at 04.00 UTC at the earliest" }}
-        {{ end }}
-        {{ if .HasNameservers }}
-           <h3>{{ call .Trans "Nameservers" }}</h3>
-        <table class="table table-hover table-sm" id="nameservers">
-            <thead>
-            <tr>
-                <th scope="col">{{ call .Trans "Nameserver" }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{ range $index, $ns := .Nameservers }}
-            <tr>
-                <td>
-                    <a href="/nameservers/{{ $ns.Host }}">{{ $ns.Host }}</a>
-                </td>
-            </tr>
-            {{ end }}
-            </tbody>
-        </table>
-        {{ end }}
+        <div class="row pb-5 mt-5">
+            <div class="col">
+                <h2>{{ .Title }}</h2>
+                <p>{{ call .Trans "This domain was first seen by Domäner.xyz at" }} {{ .FirstSeen }}</p>
+                {{ if .HasReleaseAt }}
+                {{ call .Trans "This domain is pending delete and if it is not renewed it can be registered again after"
+                }} {{
+                .ReleaseAt }} {{ call .Trans "at 04.00 UTC at the earliest" }}
+                {{ end }}
+            </div>
+            <div class="col">
+                <button id="whois-button" class="btn btn-primary">{{ call .Trans "Request WHOIS Lookup" }}</button>
+                <div class="mt-2" id="whois-result">
+                </div>
+            </div>
+        </div>
+        <div class="row pb-5">
+            <div class="col">
+                {{ if .HasNameservers }}
+                <h3>{{ call .Trans "Nameservers" }}</h3>
+                <table class="table table-hover table-sm" id="nameservers">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ call .Trans "Nameserver" }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{ range $index, $ns := .Nameservers }}
+                    <tr>
+                        <td>
+                            <a href="/nameservers/{{ $ns.Host }}">{{ $ns.Host }}</a>
+                        </td>
+                    </tr>
+                    {{ end }}
+                    </tbody>
+                </table>
+                {{ end }}
+            </div>
+        </div>
+        <script>
+            function whois() {
+                let whoisButton = document.getElementById("whois-button")
+                whoisButton.addEventListener('click', function (e) {
+                    whoisButton.disabled = true
+                    whoisButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\n' +
+                        'Loading...'
+                    let whoisSection = document.getElementById("whois-result")
+                    let data = {
+                        domain: "{{ .Title }}",
+                    }
+                    fetch('/api/1.0/whois', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    }).then(response => response.json()).then(data => {
+                        whoisButton.disabled = false
+                        whoisButton.innerHTML = '{{ call .Trans "Request WHOIS Lookup" }}'
+                        whoisSection.innerText = data.raw
+                    }).catch((error) => {
+                        console.error('Error:', error);
+                    });
+                })
+            }
+
+            whois()
+        </script>
     </div>
 </main>
 

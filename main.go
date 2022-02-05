@@ -11,6 +11,7 @@ import (
 	"github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/middleware"
 	"github.com/uberswe/domains-sweden/routes"
+	"github.com/uberswe/domains-sweden/routes/api"
 	"golang.org/x/text/language"
 	"html/template"
 	"io/fs"
@@ -159,6 +160,12 @@ func Run() {
 	// We need to handle post from the login redirect
 	admin.POST("/admin", controller.Admin)
 	admin.GET("/logout", controller.Logout)
+
+	apiRouter := r.Group("/api/1.0/")
+	apiController := api.New(db, conf, bundle)
+
+	apiRouter.Use(middleware.Throttle(conf.RequestsPerMinute))
+	apiRouter.POST("/whois", apiController.Whois)
 
 	// This starts our webserver, our application will not stop running or go past this point unless
 	// an error occurs or the web server is stopped for some reason. It is designed to run forever.
