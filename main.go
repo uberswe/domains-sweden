@@ -18,6 +18,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -103,13 +104,15 @@ func Run() {
 	r.GET("/sitemap.xml", controller.Sitemap)
 	r.GET("/sitemap/default/sitemap.xml", controller.SitemapDefault)
 	r.GET("/sitemap/domains/:page/sitemap.xml", controller.SitemapDomains)
-	r.GET("/sitemap/nameservers/:page/sitemap.xml", controller.SitemapNameservers)
+	r.GET("/sistemap/nameservers/:page/sitemap.xml", controller.SitemapNameservers)
 
 	// Session middleware is applied to all groups after this point.
 	r.Use(middleware.Session(db))
 
 	// A General middleware is defined to add default headers to improve site security
 	r.Use(middleware.General())
+
+	r.Use(redirect())
 
 	// Any request to / will call controller.Index
 	r.GET("/", controller.Index)
@@ -136,11 +139,17 @@ func Run() {
 	noAuth.Use(middleware.NoAuth())
 
 	noAuth.GET("/login", controller.Login)
+	noAuth.GET("/contact-us", controller.Contact)
 	noAuth.GET("/register", controller.Register)
 	noAuth.GET("/activate/resend", controller.ResendActivation)
 	noAuth.GET("/activate/:token", controller.Activate)
 	noAuth.GET("/user/password/forgot", controller.ForgotPassword)
 	noAuth.GET("/user/password/reset/:token", controller.ResetPassword)
+
+	publicForm := noAuth.Group("/")
+	publicForm.Use(middleware.Throttle(conf.RequestsPerMinute))
+
+	publicForm.POST("/contact-us", controller.ContactPost)
 
 	// We make a separate group for our post requests on the same endpoints so that we can define our throttling middleware on POST requests only.
 	noAuthPost := noAuth.Group("/")
@@ -174,4 +183,26 @@ func Run() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func redirect() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.Request.Host == "domaner.xyz" || c.Request.Host == "www.domaner.xyz" {
+			c.Redirect(http.StatusMovedPermanently, buildURL("https://www.xn--domner-dua.xyz/", c.Request.URL.Path))
+			return
+		}
+		c.Next()
+	}
+}
+
+func buildURL(base string, paths ...string) string {
+	base = strings.TrimSuffix(base, "/")
+	path := ""
+	for i, p := range paths {
+		if i > 0 {
+			path += "/"
+		}
+		path += strings.Trim(p, "/")
+	}
+	return fmt.Sprintf("%s/%s", base, path)
 }

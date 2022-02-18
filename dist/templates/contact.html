@@ -1,0 +1,44 @@
+{{ template "header.html" . }}
+
+<main class="flex-shrink-0">
+    <div class="container">
+        <div class="row pb-5 mt-5">
+            <div class="col">
+                <h2>Contact us</h2>
+
+                {{ template "messages.html" . }}
+
+                <form class="needs-validation" method="POST" action="/contact-us">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="" required>
+                            <div class="invalid-feedback">
+                                Valid name is required.
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="content" class="form-label">Message</label>
+                            <textarea class="form-control" id="content" name="content" placeholder="Your message"s></textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <button class="w-100 btn btn-primary btn-lg" type="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{ template "footer.html" . }}
