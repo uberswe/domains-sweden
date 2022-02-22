@@ -7,6 +7,7 @@ import (
 	"github.com/uberswe/domains-sweden/config"
 	"github.com/uberswe/domains-sweden/lang"
 	"github.com/uberswe/domains-sweden/middleware"
+	"github.com/uberswe/domains-sweden/parser"
 	"gorm.io/gorm"
 )
 
@@ -15,14 +16,16 @@ type Controller struct {
 	db     *gorm.DB
 	config config.Config
 	bundle *i18n.Bundle
+	parser *parser.Parser
 }
 
 // New creates a new instance of the routes.Controller
-func New(db *gorm.DB, c config.Config, bundle *i18n.Bundle) Controller {
+func New(db *gorm.DB, parser *parser.Parser, c config.Config, bundle *i18n.Bundle) Controller {
 	return Controller{
 		db:     db,
 		config: c,
 		bundle: bundle,
+		parser: parser,
 	}
 }
 

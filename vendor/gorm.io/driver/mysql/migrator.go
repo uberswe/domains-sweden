@@ -200,7 +200,7 @@ func (m Migrator) ColumnTypes(value interface{}) ([]gorm.ColumnType, error) {
 		if !m.DisableDatetimePrecision {
 			columnTypeSQL += ", datetime_precision "
 		}
-		columnTypeSQL += "FROM information_schema.columns WHERE table_schema = ? AND table_name = ?"
+		columnTypeSQL += "FROM information_schema.columns WHERE table_schema = ? AND table_name = ? ORDER BY ORDINAL_POSITION"
 
 		columns, rowErr := m.DB.Raw(columnTypeSQL, currentDatabase, stmt.Table).Rows()
 		if rowErr != nil {
@@ -235,5 +235,11 @@ func (m Migrator) CurrentDatabase() (name string) {
 	m.DB.Raw(
 		"SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE ? ORDER BY SCHEMA_NAME=? DESC limit 1",
 		baseName+"%", baseName).Scan(&name)
+	return
+}
+
+func (m Migrator) GetTables() (tableList []string, err error) {
+	err = m.DB.Raw("SELECT TABLE_NAME FROM information_schema.tables where TABLE_SCHEMA=?", m.CurrentDatabase()).
+		Scan(&tableList).Error
 	return
 }

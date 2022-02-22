@@ -58,6 +58,8 @@ func migrateDatabase(db *gorm.DB) error {
 		&models.Fetch{},
 		&models.NameserverAggregate{},
 		&models.Sitemap{},
+		&models.Parse{},
+		&models.ParseEvent{},
 	)
 	return err
 }

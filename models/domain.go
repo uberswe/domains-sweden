@@ -12,4 +12,5 @@ type Domain struct {
 	ExpiresAt    *time.Time
 	Nameservers  []Nameserver `gorm:"many2many:domain_nameservers;"`
 	Releases     []Release    `gorm:"many2many:domain_releases;"`
+	Parses       []Parse
 }

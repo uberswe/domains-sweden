@@ -3,26 +3,35 @@ module github.com/uberswe/domains-sweden
 go 1.16
 
 require (
-	github.com/BurntSushi/toml v0.3.1
+	github.com/BurntSushi/toml v1.0.0
+	github.com/chromedp/cdproto v0.0.0-20220217222649-d8c14a5c6edf
+	github.com/chromedp/chromedp v0.7.7
+	github.com/esimov/stackblur-go v1.0.2
 	github.com/gin-contrib/sessions v0.0.4
 	github.com/gin-gonic/gin v1.7.7
-	github.com/go-playground/validator/v10 v10.4.1
+	github.com/go-playground/validator/v10 v10.10.0
 	github.com/gorilla/securecookie v1.1.1
-	github.com/kr/text v0.2.0 // indirect
+	github.com/gorilla/sessions v1.2.1 // indirect
+	github.com/jackc/pgx/v4 v4.15.0 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/likexian/whois v1.12.4
-	github.com/likexian/whois-parser v1.22.0
-	github.com/miekg/dns v1.1.45
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-sqlite3 v1.14.11 // indirect
+	github.com/miekg/dns v1.1.46
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nicksnyder/go-i18n/v2 v2.1.2
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/ulid/v2 v2.0.2
+	github.com/ugorji/go v1.2.6 // indirect
 	github.com/ulule/limiter/v3 v3.9.0
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
+	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 	golang.org/x/text v0.3.7
-	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
-	gorm.io/driver/mysql v1.2.1
+	golang.org/x/tools v0.1.9 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
+	gorm.io/driver/mysql v1.2.3
 	gorm.io/driver/postgres v1.2.3
 	gorm.io/driver/sqlite v1.2.6
-	gorm.io/gorm v1.22.4
+	gorm.io/gorm v1.22.5
 )

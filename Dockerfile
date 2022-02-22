@@ -1,4 +1,6 @@
-FROM golang:1.16.5-alpine AS builder
+FROM golang:1.17.5-alpine AS builder
+
+RUN apk update && apk upgrade && apk add --no-cache bash git && apk add --no-cache chromium
 
 WORKDIR /app
 COPY . .
@@ -10,14 +12,6 @@ RUN npm run build
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o "main" -ldflags="-w -s" ./cmd/base/main.go
 
-FROM scratch
-
-WORKDIR /app
-COPY --from=builder /app/active.en.toml /app/active.en.toml
-COPY --from=builder /app/active.sv.toml /app/active.sv.toml
-COPY --from=builder /app/main /usr/bin/
-COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs/
-
-CMD ["main"]
+CMD ["/app/main"]
 
 EXPOSE 80

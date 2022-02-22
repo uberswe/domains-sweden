@@ -10,6 +10,7 @@ import (
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/middleware"
+	"github.com/uberswe/domains-sweden/parser"
 	"github.com/uberswe/domains-sweden/routes"
 	"github.com/uberswe/domains-sweden/routes/api"
 	"golang.org/x/text/language"
@@ -68,6 +69,8 @@ func Run() {
 		log.Fatalln(err)
 	}
 
+	parserService := parser.New(db)
+
 	domainService := domain.New(db)
 	go domainService.Poll()
 
@@ -78,7 +81,7 @@ func Run() {
 	store := cookie.NewStore([]byte(conf.CookieSecret))
 
 	// We define our session middleware to be used globally on all routes
-	r.Use(sessions.Sessions("golang_base_project_session", store))
+	r.Use(sessions.Sessions("domaner_xyz_session", store))
 
 	// We pase our template variable t to the gin engine so it can be used to render html pages
 	r.SetHTMLTemplate(t)
@@ -99,7 +102,7 @@ func Run() {
 	assets.StaticFS("/", http.FS(subFS))
 
 	// A new instance of the routes controller is created
-	controller := routes.New(db, conf, bundle)
+	controller := routes.New(db, parserService, conf, bundle)
 
 	r.GET("/sitemap.xml", controller.Sitemap)
 	r.GET("/sitemap/default/sitemap.xml", controller.SitemapDefault)

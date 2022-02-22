@@ -12,15 +12,45 @@
                 .ReleaseAt }} {{ call .Trans "at 04.00 UTC at the earliest" }}
                 {{ end }}
             </div>
-            <div class="col">
-                <button id="whois-button" class="btn btn-primary">{{ call .Trans "Request WHOIS Lookup" }}</button>
-                <div class="mt-2" id="whois-result">
-                </div>
-            </div>
         </div>
         <div class="row pb-5">
+
+            {{ if .HasParse }}
             <div class="col">
-                {{ if .HasNameservers }}
+                <h3>{{ call .Trans "Website Data" }}</h3>
+                {{ .Screenshot }}
+                <table class="table table-hover table-sm" id="website-data">
+                    <tbody>
+                    <tr>
+                        <td>
+                            {{ call .Trans "Page Load Time" }}
+                        </td>
+                        <td>
+                            {{ .LoadTime }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ call .Trans "Page Size" }}
+                        </td>
+                        <td>
+                            {{ .PageSize }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ call .Trans "Last Retrieved" }}
+                        </td>
+                        <td>
+                            {{ .ParsedAt }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            {{ end }}
+            {{ if .HasNameservers }}
+            <div class="col">
                 <h3>{{ call .Trans "Nameservers" }}</h3>
                 <table class="table table-hover table-sm" id="nameservers">
                     <thead>
@@ -38,7 +68,14 @@
                     {{ end }}
                     </tbody>
                 </table>
-                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+        <div class="row pb-5">
+            <div class="col">
+                <button id="whois-button" class="btn btn-primary">{{ call .Trans "Request WHOIS Lookup" }}</button>
+                <div class="mt-2" id="whois-result">
+                </div>
             </div>
         </div>
         <script>
