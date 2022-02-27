@@ -35,7 +35,6 @@ func New(db *gorm.DB, s *sftp.Service) *Parser {
 	go p.run()
 	go p.hearthbeat()
 	go p.processmeta()
-	go p.moveParsesToRemote()
 	return &p
 }
 
@@ -151,46 +150,4 @@ func (p *Parser) jobTrigger(payload []byte) error {
 func shaHash(b []byte) string {
 	hash := sha256.Sum256(b)
 	return fmt.Sprintf("%x", hash[:])
-}
-
-func (p *Parser) moveParsesToRemote() {
-	var results []models.Parse
-	result := p.DB.Where("error = ?", nil).
-		Where("content_hash = ?", "").
-		FindInBatches(&results, 100, func(tx *gorm.DB, batch int) error {
-			for i, result := range results {
-				// batch processing found records
-				if len(result.BlurredScreenshot) > 0 {
-					results[i].BlurredScreenshotHash = shaHash(result.BlurredScreenshot)
-					err := p.SFTPService.Upload(result.BlurredScreenshot, fmt.Sprintf("/screenshots/blurred-%s.jpg", results[i].BlurredScreenshotHash))
-					if err != nil {
-						return err
-					}
-				}
-				if len(result.Screenshot) > 0 {
-					results[i].ScreenshotHash = shaHash(result.Screenshot)
-					err := p.SFTPService.Upload(result.Screenshot, fmt.Sprintf("/screenshots/%s.jpg", results[i].ScreenshotHash))
-					if err != nil {
-						return err
-					}
-				}
-				if len(result.Content) > 0 {
-					results[i].ContentHash = shaHash(result.Content)
-					err := p.SFTPService.Upload(result.Content, fmt.Sprintf("/content/%s.html", results[i].ContentHash))
-					if err != nil {
-						return err
-					}
-				}
-			}
-
-			tx.Save(&results)
-
-			log.Printf("Move parses to remote batch: %d\n", batch)
-			// returns error will stop future batches
-			return nil
-		})
-
-	log.Println(result.Error)
-
-	log.Printf("Finished migrating parses to remote: %d\n", result.RowsAffected)
 }

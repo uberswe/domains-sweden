@@ -8,6 +8,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -60,7 +61,46 @@ func migrateDatabase(db *gorm.DB) error {
 		&models.Sitemap{},
 		&models.Parse{},
 		&models.ParseEvent{},
+		&models.Migration{},
 	)
 
+	parseDropContentScreenshotBlurredScreenshot(db)
+
 	return err
+}
+
+func parseDropContentScreenshotBlurredScreenshot(db *gorm.DB) {
+	m := models.Migration{
+		Key: "01_parse_drop_content_screenshot_blurred_screenshot",
+	}
+	res := db.Where(m).First(&m)
+	if res.Error == gorm.ErrRecordNotFound {
+		res = db.Save(&m)
+		if res.Error != nil {
+			log.Println(res.Error)
+			return
+		}
+	} else {
+		return
+	}
+
+	err := db.Migrator().DropColumn(&models.Parse{}, "content")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = db.Migrator().DropColumn(&models.Parse{}, "screenshot")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = db.Migrator().DropColumn(&models.Parse{}, "blurred_screenshot")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println("Migrated", m.Key)
 }
