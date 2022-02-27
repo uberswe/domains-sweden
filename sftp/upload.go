@@ -11,6 +11,11 @@ import (
 
 // Upload file to sftp server
 func (s *Service) Upload(localFile []byte, remoteFile string) (err error) {
+	err = s.connect()
+	if err != nil {
+		return err
+	}
+
 	log.Printf("Uploading to [%s] ...\n", remoteFile)
 
 	reader := bytes.NewReader(localFile)

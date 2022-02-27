@@ -7,6 +7,10 @@ import (
 )
 
 func (s *Service) Fetch(remoteFile string) (localfile []byte, err error) {
+	err = s.connect()
+	if err != nil {
+		return nil, err
+	}
 
 	fmt.Fprintf(os.Stdout, "Downloading [%s] ...\n", remoteFile)
 	// Note: SFTP To Go doesn't support O_RDWR mode

@@ -13,6 +13,14 @@ import (
 )
 
 func (s *Service) connect() error {
+	// We check if there is an active connection, if there is we return early.
+	if s.client != nil {
+		_, err := s.client.ReadDir("/")
+		if err == nil {
+			return nil
+		}
+	}
+
 	port := 22
 	var err error
 	log.Printf("Connecting to %s ...\n", s.Host)
