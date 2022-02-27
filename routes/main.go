@@ -8,24 +8,27 @@ import (
 	"github.com/uberswe/domains-sweden/lang"
 	"github.com/uberswe/domains-sweden/middleware"
 	"github.com/uberswe/domains-sweden/parser"
+	"github.com/uberswe/domains-sweden/sftp"
 	"gorm.io/gorm"
 )
 
 // Controller holds all the variables needed for routes to perform their logic
 type Controller struct {
-	db     *gorm.DB
-	config config.Config
-	bundle *i18n.Bundle
-	parser *parser.Parser
+	db          *gorm.DB
+	config      config.Config
+	bundle      *i18n.Bundle
+	parser      *parser.Parser
+	sftpService *sftp.Service
 }
 
 // New creates a new instance of the routes.Controller
-func New(db *gorm.DB, parser *parser.Parser, c config.Config, bundle *i18n.Bundle) Controller {
+func New(db *gorm.DB, parser *parser.Parser, c config.Config, bundle *i18n.Bundle, sftpService *sftp.Service) Controller {
 	return Controller{
-		db:     db,
-		config: c,
-		bundle: bundle,
-		parser: parser,
+		db:          db,
+		config:      c,
+		bundle:      bundle,
+		parser:      parser,
+		sftpService: sftpService,
 	}
 }
 

@@ -302,11 +302,11 @@ func loadActiveDomains(segment string) map[string]Domain {
 	ch, err := t.In(m, "zonedata.iis.se:53")
 	if err != nil {
 		log.Println(err)
-		return nil
+		return domains
 	}
 	if err != nil {
 		log.Println(err)
-		return nil
+		return domains
 	}
 	for env := range ch {
 		if env.Error != nil {
@@ -331,11 +331,7 @@ func loadActiveDomains(segment string) map[string]Domain {
 	}
 	if err != nil {
 		log.Println(err)
-		return nil
-	}
-	if err != nil {
-		log.Println(err)
-		return nil
+		return domains
 	}
 	return domains
 }
@@ -354,14 +350,16 @@ func loadExpiringDomains(segment string) (data Response) {
 		req, err = http.NewRequest(http.MethodGet, nuDomains, nil)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return data
 	}
 
 	req.Header.Set("User-Agent", "domäner.xyz parser, contact web@domaner.xyz in case of abuse. Also available on Github https://github.com/uberswe/domains-sweden")
 
 	res, getErr := client.Do(req)
 	if getErr != nil {
-		log.Fatal(getErr)
+		log.Println(getErr)
+		return data
 	}
 
 	if res.Body != nil {
@@ -370,12 +368,14 @@ func loadExpiringDomains(segment string) (data Response) {
 
 	body, readErr := ioutil.ReadAll(res.Body)
 	if readErr != nil {
-		log.Fatal(readErr)
+		log.Println(readErr)
+		return data
 	}
 
 	jsonErr := json.Unmarshal(body, &data)
 	if jsonErr != nil {
-		log.Fatal(jsonErr)
+		log.Println(jsonErr)
+		return data
 	}
 	return data
 }

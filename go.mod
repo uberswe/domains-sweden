@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/BurntSushi/toml v1.0.0
 	github.com/chromedp/cdproto v0.0.0-20220217222649-d8c14a5c6edf
-	github.com/chromedp/chromedp v0.7.7
+	github.com/chromedp/chromedp v0.7.8
 	github.com/esimov/stackblur-go v1.0.2
 	github.com/gin-contrib/sessions v0.0.4
 	github.com/gin-gonic/gin v1.7.7
@@ -20,18 +20,19 @@ require (
 	github.com/miekg/dns v1.1.46
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
-	github.com/nicksnyder/go-i18n/v2 v2.1.2
+	github.com/nicksnyder/go-i18n/v2 v2.2.0
 	github.com/oklog/ulid/v2 v2.0.2
+	github.com/pkg/sftp v1.13.4
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/ulule/limiter/v3 v3.9.0
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
-	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
-	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
+	golang.org/x/sys v0.0.0-20220224120231-95c6836cb0e7 // indirect
 	golang.org/x/text v0.3.7
 	golang.org/x/tools v0.1.9 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
-	gorm.io/driver/mysql v1.2.3
-	gorm.io/driver/postgres v1.2.3
-	gorm.io/driver/sqlite v1.2.6
-	gorm.io/gorm v1.22.5
+	gorm.io/driver/mysql v1.3.2
+	gorm.io/driver/postgres v1.3.1
+	gorm.io/driver/sqlite v1.3.1
+	gorm.io/gorm v1.23.1
 )

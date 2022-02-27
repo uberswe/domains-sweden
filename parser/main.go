@@ -1,11 +1,13 @@
 package parser
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/uberswe/domains-sweden/models"
 	"github.com/uberswe/domains-sweden/queue"
+	"github.com/uberswe/domains-sweden/sftp"
 	"gorm.io/gorm"
 	"log"
 	"time"
@@ -18,18 +20,22 @@ type Event struct {
 }
 
 type Parser struct {
-	DB    *gorm.DB
-	Queue *queue.Queue
+	DB          *gorm.DB
+	Queue       *queue.Queue
+	SFTPService *sftp.Service
 }
 
-func New(db *gorm.DB) *Parser {
+func New(db *gorm.DB, s *sftp.Service) *Parser {
 	q := queue.NewQueue("domain_parser", 10000000)
 	p := Parser{
-		DB:    db,
-		Queue: q,
+		DB:          db,
+		Queue:       q,
+		SFTPService: s,
 	}
 	go p.run()
 	go p.hearthbeat()
+	go p.processmeta()
+	go p.moveParsesToRemote()
 	return &p
 }
 
@@ -103,11 +109,28 @@ func (p *Parser) jobTrigger(payload []byte) error {
 		return err2
 	}
 
-	parse.Content = []byte(content)
+	bContent := []byte(content)
+	parse.ContentHash = shaHash(bContent)
+	parse.ScreenshotHash = shaHash(screenshot)
+	parse.BlurredScreenshotHash = shaHash(blurredScreenshot)
+
+	err = p.SFTPService.Upload(bContent, fmt.Sprintf("/content/%s.html", parse.ContentHash))
+	if err != nil {
+		return err
+	}
+
+	err = p.SFTPService.Upload(screenshot, fmt.Sprintf("/screenshots/%s.jpg", parse.ScreenshotHash))
+	if err != nil {
+		return err
+	}
+
+	err = p.SFTPService.Upload(blurredScreenshot, fmt.Sprintf("/screenshots/blurred-%s.jpg", parse.BlurredScreenshotHash))
+	if err != nil {
+		return err
+	}
+
 	parse.Size = requestSize
 	parse.LoadTime = responseTime
-	parse.Screenshot = screenshot
-	parse.BlurredScreenshot = blurredScreenshot
 	parse.Requested = requested
 	for _, e := range events {
 		parse.Events = append(parse.Events, models.ParseEvent{
@@ -123,4 +146,51 @@ func (p *Parser) jobTrigger(payload []byte) error {
 	}
 
 	return nil
+}
+
+func shaHash(b []byte) string {
+	hash := sha256.Sum256(b)
+	return fmt.Sprintf("%x", hash[:])
+}
+
+func (p *Parser) moveParsesToRemote() {
+	var results []models.Parse
+	result := p.DB.Where("error = ?", nil).
+		Where("content_hash = ?", "").
+		FindInBatches(&results, 100, func(tx *gorm.DB, batch int) error {
+			for i, result := range results {
+				// batch processing found records
+				if len(result.BlurredScreenshot) > 0 {
+					results[i].BlurredScreenshotHash = shaHash(result.BlurredScreenshot)
+					err := p.SFTPService.Upload(result.BlurredScreenshot, fmt.Sprintf("/screenshots/blurred-%s.jpg", results[i].BlurredScreenshotHash))
+					if err != nil {
+						return err
+					}
+				}
+				if len(result.Screenshot) > 0 {
+					results[i].ScreenshotHash = shaHash(result.Screenshot)
+					err := p.SFTPService.Upload(result.Screenshot, fmt.Sprintf("/screenshots/%s.jpg", results[i].ScreenshotHash))
+					if err != nil {
+						return err
+					}
+				}
+				if len(result.Content) > 0 {
+					results[i].ContentHash = shaHash(result.Content)
+					err := p.SFTPService.Upload(result.Content, fmt.Sprintf("/content/%s.html", results[i].ContentHash))
+					if err != nil {
+						return err
+					}
+				}
+			}
+
+			tx.Save(&results)
+
+			log.Printf("Move parses to remote batch: %d\n", batch)
+			// returns error will stop future batches
+			return nil
+		})
+
+	log.Println(result.Error)
+
+	log.Printf("Finished migrating parses to remote: %d\n", result.RowsAffected)
 }

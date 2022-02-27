@@ -61,5 +61,6 @@ func migrateDatabase(db *gorm.DB) error {
 		&models.Parse{},
 		&models.ParseEvent{},
 	)
+
 	return err
 }

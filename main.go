@@ -13,12 +13,14 @@ import (
 	"github.com/uberswe/domains-sweden/parser"
 	"github.com/uberswe/domains-sweden/routes"
 	"github.com/uberswe/domains-sweden/routes/api"
+	"github.com/uberswe/domains-sweden/sftp"
 	"golang.org/x/text/language"
 	"html/template"
 	"io/fs"
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -69,7 +71,9 @@ func Run() {
 		log.Fatalln(err)
 	}
 
-	parserService := parser.New(db)
+	sftpService := sftp.New(os.Getenv("HETZNER_STORAGE_HOST"), os.Getenv("HETZNER_STORAGE_USERNAME"), os.Getenv("HETZNER_STORAGE_PASSWORD"))
+
+	parserService := parser.New(db, sftpService)
 
 	domainService := domain.New(db)
 	go domainService.Poll()
@@ -102,7 +106,7 @@ func Run() {
 	assets.StaticFS("/", http.FS(subFS))
 
 	// A new instance of the routes controller is created
-	controller := routes.New(db, parserService, conf, bundle)
+	controller := routes.New(db, parserService, conf, bundle, sftpService)
 
 	r.GET("/sitemap.xml", controller.Sitemap)
 	r.GET("/sitemap/default/sitemap.xml", controller.SitemapDefault)
@@ -131,6 +135,7 @@ func Run() {
 	r.GET("/domains-released-soon", controller.DomainsReleasedSoon)
 	r.GET("/domains-released-soon/:page", controller.DomainsReleasedSoon)
 	r.GET("/domains/:domain", controller.Domain)
+	r.GET("/domains/:domain/screenshot.jpg", controller.DomainScreenshot)
 	r.GET("/nameservers/:nameserver", controller.Nameserver)
 	r.GET("/nameservers/:nameserver/:page", controller.Nameserver)
 

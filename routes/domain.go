@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	domainservice "github.com/uberswe/domains-sweden/domain"
@@ -68,7 +67,7 @@ func (controller Controller) Domain(c *gin.Context) {
 		DomainID: domainModel.ID,
 	}
 
-	res = controller.db.Where(parse).First(&parse)
+	res = controller.db.Where(parse).Order("created_at DESC").First(&parse)
 	if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
 		log.Println(res.Error)
 	}
@@ -78,7 +77,7 @@ func (controller Controller) Domain(c *gin.Context) {
 		if parse.Error != nil {
 			pd.LoadTime = pd.Trans("Error loading page")
 		} else {
-			pd.Screenshot = template.HTML(fmt.Sprintf("<img src=\"data:image/jpeg;base64,%s\" class=\"img-thumbnail mx-auto d-block\" alt=\"%s\">", base64.StdEncoding.EncodeToString(parse.BlurredScreenshot), pd.Title))
+			pd.Screenshot = template.HTML(fmt.Sprintf("<img src=\"/domains/%s/screenshot.jpg\" class=\"img-thumbnail mx-auto d-block\" alt=\"%s\">", domainModel.Host, pd.Title))
 			pd.LoadTime = fmt.Sprintf("%0.3f %s", parse.LoadTime, pd.Trans("Seconds"))
 			pd.PageSize = fmt.Sprintf("%0.2f %s", parse.Size, pd.Trans("Mb"))
 		}
@@ -86,4 +85,43 @@ func (controller Controller) Domain(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "domain.html", pd)
+}
+
+func (controller Controller) DomainScreenshot(c *gin.Context) {
+	// Return JPG from remote server
+	domain := c.Param("domain")
+
+	domainModel := models.Domain{
+		Host: domain,
+	}
+
+	res := controller.db.Where(domainModel).First(&domainModel)
+	if res.Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	parseModel := models.Parse{
+		DomainID: domainModel.ID,
+	}
+
+	res = controller.db.Where(parseModel).Order("created_at DESC").First(&parseModel)
+	if res.Error != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	if parseModel.BlurredScreenshotHash != "" {
+		fetch, err := controller.sftpService.Fetch(fmt.Sprintf("/screenshots/blurred-%s.jpg", parseModel.BlurredScreenshotHash))
+		if err != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+
+		c.Data(http.StatusOK, "image/jpeg", fetch)
+		return
+	}
+
+	c.Status(http.StatusNotFound)
+	return
 }
