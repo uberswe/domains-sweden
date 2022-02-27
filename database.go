@@ -65,6 +65,7 @@ func migrateDatabase(db *gorm.DB) error {
 	)
 
 	parseDropContentScreenshotBlurredScreenshot(db)
+	domainChangeLongtextToText(db)
 
 	return err
 }
@@ -99,6 +100,34 @@ func parseDropContentScreenshotBlurredScreenshot(db *gorm.DB) {
 	err = db.Migrator().DropColumn(&models.Parse{}, "blurred_screenshot")
 	if err != nil {
 		log.Println(err)
+		return
+	}
+
+	log.Println("Migrated", m.Key)
+}
+
+func domainChangeLongtextToText(db *gorm.DB) {
+	m := models.Migration{
+		Key: "02_domain_change_longtext_to_text",
+	}
+	res := db.Where(m).First(&m)
+	if res.Error == gorm.ErrRecordNotFound {
+		res = db.Save(&m)
+		if res.Error != nil {
+			log.Println(res.Error)
+			return
+		}
+	} else {
+		return
+	}
+
+	err := db.Migrator().AlterColumn(&models.Domain{}, "Host")
+	if err != nil {
+		return
+	}
+
+	err = db.Migrator().CreateIndex(&models.Domain{}, "Host")
+	if err != nil {
 		return
 	}
 

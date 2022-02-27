@@ -7,7 +7,7 @@ import (
 
 type Domain struct {
 	gorm.Model
-	Host         string `gorm:"uniqueIndex,size:256"`
+	Host         string `gorm:"index:idx_domains_host;size:256;type:varchar(256)"`
 	RegisteredAt *time.Time
 	ExpiresAt    *time.Time
 	Nameservers  []Nameserver `gorm:"many2many:domain_nameservers;"`
