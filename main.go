@@ -197,6 +197,7 @@ func redirect() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Host == "domaner.xyz" || c.Request.Host == "www.domaner.xyz" {
 			c.Redirect(http.StatusMovedPermanently, buildURL("https://www.xn--domner-dua.xyz/", c.Request.URL.Path))
+			c.Abort()
 			return
 		}
 		c.Next()
