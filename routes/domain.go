@@ -32,14 +32,30 @@ func (controller Controller) Domain(c *gin.Context) {
 
 	domain := c.Param("domain")
 
+	domainDecoded, _ := idna.ToASCII(domain)
+
 	domainModel := models.Domain{
-		Host: domain,
+		Host: domainDecoded,
 	}
 
 	res := controller.db.Where(domainModel).Preload("Nameservers").Preload("Releases").First(&domainModel)
 	if res.Error != nil {
-		c.HTML(http.StatusNotFound, "404.html", dpd)
-		return
+		if res.Error == gorm.ErrRecordNotFound {
+			domainModel = models.Domain{
+				Host: domain,
+			}
+			res = controller.db.Where(domainModel).Preload("Nameservers").Preload("Releases").First(&domainModel)
+			if res.Error != nil {
+				if res.Error == gorm.ErrRecordNotFound {
+					// TODO perform a dns lookup to add the domain to our database
+				}
+				c.HTML(http.StatusNotFound, "404.html", dpd)
+				return
+			}
+		} else {
+			c.HTML(http.StatusNotFound, "404.html", dpd)
+			return
+		}
 	}
 
 	go controller.parser.Parse(domainModel)
@@ -91,8 +107,10 @@ func (controller Controller) DomainScreenshot(c *gin.Context) {
 	// Return JPG from remote server
 	domain := c.Param("domain")
 
+	domainDecoded, _ := idna.ToASCII(domain)
+
 	domainModel := models.Domain{
-		Host: domain,
+		Host: domainDecoded,
 	}
 
 	res := controller.db.Where(domainModel).First(&domainModel)

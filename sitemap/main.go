@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/uberswe/domains-sweden/models"
+	"golang.org/x/net/idna"
 	"gorm.io/gorm"
 	"log"
 	"strconv"
@@ -113,8 +114,9 @@ func (s *Service) sitemapFromDomains(page int, identifier string) (string, error
 	sitemap := "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 	sitemap += "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
 	for _, d := range domains {
+		domainDecoded, _ := idna.ToASCII(d.Host)
 		sitemap += "	<url>"
-		sitemap += fmt.Sprintf("		<loc>https://www.xn--domner-dua.xyz/domains/%s</loc>", d.Host)
+		sitemap += fmt.Sprintf("		<loc>https://www.xn--domner-dua.xyz/domains/%s</loc>", domainDecoded)
 		sitemap += "		<changefreq>monthly</changefreq>"
 		sitemap += fmt.Sprintf("        <lastmod>%s</lastmod>", d.UpdatedAt.Format("2006-01-02"))
 		sitemap += "		<priority>0.7</priority>"
@@ -165,8 +167,9 @@ func (s *Service) sitemapFromNameservers(page int, identifier string) (string, e
 	sitemap := "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 	sitemap += "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
 	for _, ns := range nameservers {
+		domainDecoded, _ := idna.ToASCII(ns.Host)
 		sitemap += "	<url>"
-		sitemap += fmt.Sprintf("		<loc>https://www.xn--domner-dua.xyz/nameservers/%s</loc>", ns.Host)
+		sitemap += fmt.Sprintf("		<loc>https://www.xn--domner-dua.xyz/nameservers/%s</loc>", domainDecoded)
 		sitemap += "		<changefreq>monthly</changefreq>"
 		sitemap += fmt.Sprintf("        <lastmod>%s</lastmod>", ns.UpdatedAt.Format("2006-01-02"))
 		sitemap += "		<priority>0.6</priority>"

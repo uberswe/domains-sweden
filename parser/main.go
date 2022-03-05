@@ -48,7 +48,7 @@ func (p *Parser) run() {
 func (p *Parser) hearthbeat() {
 	for range time.Tick(time.Minute * 10) {
 		var domains []models.Domain
-		res := p.DB.Model(models.Domain{}).Order("RAND()").Limit(10).Find(&domains)
+		res := p.DB.Model(models.Domain{}).Joins("LEFT JOIN parses ON domains.id = parses.domain_id").Where("parses.id IS NULL").Order("RAND()").Limit(10).Find(&domains)
 		if res.Error != nil {
 			log.Println(res.Error)
 		} else {

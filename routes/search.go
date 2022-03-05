@@ -47,6 +47,8 @@ func (controller Controller) Search(c *gin.Context) {
 		}
 	}
 
+	search, _ = idna.ToASCII(search)
+
 	var results []models.Domain
 
 	searchFilter := fmt.Sprintf("%s%s%s", "%", search, "%")
@@ -54,7 +56,7 @@ func (controller Controller) Search(c *gin.Context) {
 	search4 := fmt.Sprintf("%s%s", search, "%")
 
 	res := controller.db.
-		Raw(fmt.Sprintf("SELECT * FROM domains WHERE host LIKE ? ORDER BY LENGTH(host), CASE WHEN host LIKE ? THEN 1 WHEN host LIKE ? THEN 2 WHEN host LIKE ? THEN 4 ELSE 3 END LIMIT %d OFFSET %d", resultsPerPage, resultsPerPage*(page-1)), searchFilter, search, search2, search4).
+		Raw(fmt.Sprintf("SELECT * FROM domains WHERE BINARY host LIKE ? ORDER BY LENGTH(host), CASE WHEN BINARY host LIKE ? THEN 1 WHEN BINARY host LIKE ? THEN 2 WHEN BINARY host LIKE ? THEN 4 ELSE 3 END LIMIT %d OFFSET %d", resultsPerPage, resultsPerPage*(page-1)), searchFilter, search, search2, search4).
 		Find(&results)
 
 	if res.Error != nil || len(results) == 0 {

@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	domainservice "github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/models"
 	"log"
 	"net/http"
@@ -54,7 +55,7 @@ func (controller Controller) DomainsReleasedSoon(c *gin.Context) {
 
 	for _, d := range domains {
 		drpd.Domains = append(drpd.Domains, IndexDomain{
-			Host:       d.Host,
+			Host:       domainservice.Title(d.Host),
 			URL:        fmt.Sprintf("/domains/%s", d.Host),
 			ReleasesAt: d.ReleasedAt.Format("2006-01-02"),
 		})

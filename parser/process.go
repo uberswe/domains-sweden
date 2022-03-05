@@ -3,6 +3,7 @@ package parser
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/chromedp/cdproto/dom"
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/cdproto/network"
@@ -86,7 +87,7 @@ func (p *Parser) process(url string) (content string, requestSize float64, respo
 	// navigate to a page, wait for an element, click
 	err = chromedp.Run(ctx,
 		chromedp.EmulateViewport(1920, 1080),
-		emulation.SetUserAgentOverride("Domaner.xyz Spider Bot - Please contact support@domaner.xyz regarding any abuse or problem"),
+		emulation.SetUserAgentOverride(fmt.Sprintf("Domaner.xyz Spider Bot - Please contact support@domaner.xyz regarding any abuse or problem. Visit https://www.domaner.xyz for more information.")),
 		chromedp.Navigate(url),
 		chromedp.Sleep(10*time.Second),
 		// wait for footer element is visible (ie, page is loaded)

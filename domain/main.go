@@ -63,7 +63,8 @@ func (s *Service) run() {
 		var results []models.Domain
 		res := s.DB.Model(&models.Domain{}).Preload("Nameservers").Preload("Releases").FindInBatches(&results, 1000, func(tx *gorm.DB, batch int) error {
 			for _, result := range results {
-				if d, ok := data[result.Host]; ok {
+				domainDecoded, _ := idna.ToASCII(result.Host)
+				if d, ok := data[domainDecoded]; ok {
 					updated := false
 					foundRelease := false
 					foundNameserver := false
@@ -106,8 +107,9 @@ func (s *Service) run() {
 					if !foundNameserver {
 						result.Nameservers = nil
 						for _, ns := range d.Nameservers {
+							domainDecoded, _ := idna.ToASCII(ns.Domain)
 							nameserver := models.Nameserver{
-								Host: ns.Domain,
+								Host: domainDecoded,
 							}
 							res := s.DB.Model(&models.Nameserver{}).Where(nameserver).First(&nameserver)
 							if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
@@ -136,8 +138,9 @@ func (s *Service) run() {
 		for domain, obj := range data {
 			if !obj.Processed {
 				// The domain does not exist in our database
+				domainDecoded, _ := idna.ToASCII(domain)
 				d := models.Domain{
-					Host: domain,
+					Host: domainDecoded,
 				}
 				if obj.ReleaseAt != "" {
 					parse, err := time.Parse("2006-01-02", obj.ReleaseAt)
@@ -156,8 +159,9 @@ func (s *Service) run() {
 					}
 				}
 				for _, ns := range obj.Nameservers {
+					nsDecoded, _ := idna.ToASCII(ns.Domain)
 					nameserver := models.Nameserver{
-						Host: ns.Domain,
+						Host: nsDecoded,
 					}
 					res = s.DB.Where(nameserver).First(&nameserver)
 					if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
@@ -279,7 +283,7 @@ func (s *Service) load() map[string]Domain {
 		}
 
 		for _, d := range data.Data {
-			host, _ := idna.ToUnicode(strings.TrimRight(d.Name, "."))
+			host, _ := idna.ToASCII(strings.TrimRight(d.Name, "."))
 			if tmpD, ok := domains[host]; ok {
 				tmpD.ReleaseAt = d.ReleaseAt
 				domains[host] = tmpD
@@ -381,7 +385,8 @@ func loadExpiringDomains(segment string) (data Response) {
 }
 
 func Title(s string) string {
-	parts := strings.Split(s, ".")
+	hash, _ := idna.ToUnicode(s)
+	parts := strings.Split(hash, ".")
 	parts[0] = strings.Title(strings.ToLower(parts[0]))
 	return strings.Join(parts, ".")
 }

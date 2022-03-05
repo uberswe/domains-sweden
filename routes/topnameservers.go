@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	domainservice "github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/models"
 	"log"
 	"net/http"
@@ -71,7 +72,7 @@ func (controller Controller) TopNameservers(c *gin.Context) {
 				}
 			}
 			tnpd.Nameservers = append(tnpd.Nameservers, IndexNameserver{
-				Host:  ns.Host,
+				Host:  domainservice.Title(ns.Host),
 				URL:   fmt.Sprintf("/nameservers/%s", ns.Host),
 				Count: int64(count),
 			})

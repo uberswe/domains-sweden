@@ -27,8 +27,10 @@ func (controller Controller) Nameserver(c *gin.Context) {
 
 	nameserver := c.Param("nameserver")
 
+	domainDecoded, _ := idna.ToASCII(nameserver)
+
 	nameserverModel := models.Nameserver{
-		Host: nameserver,
+		Host: domainDecoded,
 	}
 	perPage := 20
 	page := 1
