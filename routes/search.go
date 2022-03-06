@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/models"
 	"golang.org/x/net/idna"
 	"log"
@@ -72,8 +73,8 @@ func (controller Controller) Search(c *gin.Context) {
 	for i := range results {
 		host, _ := idna.ToUnicode(results[i].Host)
 		pd.Results = append(pd.Results, SearchDomain{
-			Host: host,
-			URL:  fmt.Sprintf("/domains/%s", results[i].Host),
+			Host: domain.Title(host),
+			URL:  fmt.Sprintf("/domains/%s", domain.ToUnicode(results[i].Host)),
 		})
 	}
 

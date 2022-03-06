@@ -56,7 +56,7 @@ func (controller Controller) DomainsReleasedSoon(c *gin.Context) {
 	for _, d := range domains {
 		drpd.Domains = append(drpd.Domains, IndexDomain{
 			Host:       domainservice.Title(d.Host),
-			URL:        fmt.Sprintf("/domains/%s", d.Host),
+			URL:        fmt.Sprintf("/domains/%s", domainservice.ToUnicode(d.Host)),
 			ReleasesAt: d.ReleasedAt.Format("2006-01-02"),
 		})
 	}

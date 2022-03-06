@@ -405,3 +405,8 @@ func Title(s string) string {
 	parts[0] = strings.Title(strings.ToLower(parts[0]))
 	return strings.Join(parts, ".")
 }
+
+func ToUnicode(s string) string {
+	hash, _ := idna.ToUnicode(s)
+	return hash
+}

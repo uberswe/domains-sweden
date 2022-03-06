@@ -93,7 +93,7 @@ func (controller Controller) Domain(c *gin.Context) {
 		if parse.Error != nil {
 			pd.LoadTime = pd.Trans("Error loading page")
 		} else {
-			pd.Screenshot = template.HTML(fmt.Sprintf("<img src=\"/domains/%s/screenshot.jpg\" class=\"img-thumbnail mx-auto d-block\" alt=\"%s\">", domainModel.Host, pd.Title))
+			pd.Screenshot = template.HTML(fmt.Sprintf("<img src=\"/domains/%s/screenshot.jpg\" class=\"img-thumbnail mx-auto d-block\" alt=\"%s\">", domainservice.ToUnicode(domainModel.Host), pd.Title))
 			pd.LoadTime = fmt.Sprintf("%0.3f %s", parse.LoadTime, pd.Trans("Seconds"))
 			pd.PageSize = fmt.Sprintf("%0.2f %s", parse.Size, pd.Trans("Mb"))
 		}

@@ -70,7 +70,7 @@ func (controller Controller) Nameserver(c *gin.Context) {
 	for _, d := range domains {
 		pd.Domains = append(pd.Domains, SearchDomain{
 			Host: domain.Title(d.Host),
-			URL:  fmt.Sprintf("/domains/%s", d.Host),
+			URL:  fmt.Sprintf("/domains/%s", domain.ToUnicode(d.Host)),
 		})
 	}
 
@@ -78,11 +78,11 @@ func (controller Controller) Nameserver(c *gin.Context) {
 
 	if len(pd.Domains) >= perPage {
 		pd.Next = true
-		pd.NextURL = fmt.Sprintf("/nameservers/%s/%d", nameserverModel.Host, page+1)
+		pd.NextURL = fmt.Sprintf("/nameservers/%s/%d", domain.ToUnicode(nameserverModel.Host), page+1)
 	}
 	if page > 1 {
 		pd.Prev = true
-		pd.PrevURL = fmt.Sprintf("/nameservers/%s/%d", nameserverModel.Host, page-1)
+		pd.PrevURL = fmt.Sprintf("/nameservers/%s/%d", domain.ToUnicode(nameserverModel.Host), page-1)
 	}
 
 	c.HTML(http.StatusOK, "nameserver.html", pd)

@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/uberswe/domains-sweden/domain"
 	"github.com/uberswe/domains-sweden/models"
 	"log"
 	"net/http"
@@ -65,8 +66,8 @@ func (controller Controller) Index(c *gin.Context) {
 
 		for _, d := range domains {
 			ipd.Domains = append(ipd.Domains, IndexDomain{
-				Host:       d.Host,
-				URL:        fmt.Sprintf("/domains/%s", d.Host),
+				Host:       domain.Title(d.Host),
+				URL:        fmt.Sprintf("/domains/%s", domain.ToUnicode(d.Host)),
 				ReleasesAt: d.ReleasedAt.Format("2006-01-02"),
 			})
 		}
@@ -100,8 +101,8 @@ func (controller Controller) Index(c *gin.Context) {
 				}
 			}
 			ipd.Nameservers = append(ipd.Nameservers, IndexNameserver{
-				Host:  ns.Host,
-				URL:   fmt.Sprintf("/nameservers/%s", ns.Host),
+				Host:  domain.ToUnicode(ns.Host),
+				URL:   fmt.Sprintf("/nameservers/%s", domain.ToUnicode(ns.Host)),
 				Count: int64(count),
 			})
 		}

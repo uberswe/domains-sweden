@@ -72,8 +72,8 @@ func (controller Controller) TopNameservers(c *gin.Context) {
 				}
 			}
 			tnpd.Nameservers = append(tnpd.Nameservers, IndexNameserver{
-				Host:  domainservice.Title(ns.Host),
-				URL:   fmt.Sprintf("/nameservers/%s", ns.Host),
+				Host:  domainservice.ToUnicode(ns.Host),
+				URL:   fmt.Sprintf("/nameservers/%s", domainservice.ToUnicode(ns.Host)),
 				Count: int64(count),
 			})
 		}
