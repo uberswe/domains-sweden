@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/uberswe/domains-sweden/config"
 	"github.com/uberswe/domains-sweden/models"
+	"github.com/uberswe/domains-sweden/text"
+	"golang.org/x/net/idna"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -66,6 +68,7 @@ func migrateDatabase(db *gorm.DB) error {
 
 	parseDropContentScreenshotBlurredScreenshot(db)
 	domainChangeLongtextToText(db)
+	fixNonAsciiDomains(db)
 
 	return err
 }
@@ -128,6 +131,49 @@ func domainChangeLongtextToText(db *gorm.DB) {
 
 	err = db.Migrator().CreateIndex(&models.Domain{}, "Host")
 	if err != nil {
+		return
+	}
+
+	log.Println("Migrated", m.Key)
+}
+
+func fixNonAsciiDomains(db *gorm.DB) {
+	m := models.Migration{
+		Key: "03_fix_non_ascii_domains",
+	}
+	res := db.Where(m).First(&m)
+	if res.Error == gorm.ErrRecordNotFound {
+		res = db.Save(&m)
+		if res.Error != nil {
+			log.Println(res.Error)
+			return
+		}
+	} else {
+		return
+	}
+
+	var results []models.Domain
+	res = db.Model(&models.Domain{}).FindInBatches(&results, 1000, func(tx *gorm.DB, batch int) error {
+		changed := 0
+		for i, r := range results {
+			if !text.IsASCII(r.Host) {
+				results[i].Host, _ = idna.ToASCII(r.Host)
+				changed++
+			}
+		}
+		if changed > 0 {
+			res2 := tx.Save(&results)
+			if res2.Error != nil {
+				log.Println(res2.Error)
+				return res2.Error
+			}
+			log.Printf("Changed %d domains from non-ascii to ascii\n", changed)
+		}
+		return nil
+	})
+
+	if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
+		log.Println(res.Error)
 		return
 	}
 

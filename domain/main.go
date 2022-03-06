@@ -6,6 +6,7 @@ import (
 	"github.com/miekg/dns"
 	"github.com/uberswe/domains-sweden/models"
 	"github.com/uberswe/domains-sweden/sitemap"
+	"github.com/uberswe/domains-sweden/text"
 	"golang.org/x/net/idna"
 	"gorm.io/gorm"
 	"io/ioutil"
@@ -107,9 +108,9 @@ func (s *Service) run() {
 					if !foundNameserver {
 						result.Nameservers = nil
 						for _, ns := range d.Nameservers {
-							domainDecoded, _ := idna.ToASCII(ns.Domain)
+							nsDecoded, _ := idna.ToASCII(ns.Domain)
 							nameserver := models.Nameserver{
-								Host: domainDecoded,
+								Host: nsDecoded,
 							}
 							res := s.DB.Model(&models.Nameserver{}).Where(nameserver).First(&nameserver)
 							if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
@@ -213,7 +214,7 @@ func (s *Service) run() {
 	}
 
 	log.Println("removing duplicate domains")
-	res = s.DB.Raw("SELECT GROUP_CONCAT(id) AS ids, host, COUNT(*) AS count FROM domains GROUP BY host HAVING count > 1;").Find(&domains)
+	res = s.DB.Raw("SELECT GROUP_CONCAT(id) AS ids, host, COUNT(*) AS count FROM domains GROUP BY host HAVING count > 1").Find(&domains)
 	if res.Error != nil {
 		log.Println(res.Error)
 	}
@@ -222,19 +223,8 @@ func (s *Service) run() {
 		log.Println("domains", d.IDs, "Host", d.Host, "Count", d.Count)
 		idParts := strings.Split(d.IDs, ",")
 		for i, p := range idParts {
-			if i != 0 {
-				dModel := models.Domain{}
-				if pi, err := strconv.Atoi(p); err == nil {
-					dModel.ID = uint(pi)
-					err = s.DB.Model(&dModel).Association("Nameservers").Clear()
-					if err != nil {
-						log.Println(err)
-					}
-					res = s.DB.Unscoped().Delete(&dModel)
-					if res.Error != nil {
-						log.Println(res.Error)
-					}
-				}
+			if i != 0 || !text.IsASCII(d.Host) {
+				s.deleteDomain(p)
 			}
 		}
 	}
@@ -242,6 +232,31 @@ func (s *Service) run() {
 	sitemapService := sitemap.New(s.DB)
 	sitemapService.GenerateAllSitemaps()
 	log.Println("hourly update complete")
+}
+
+func (s *Service) deleteDomain(domainID string) {
+	dModel := models.Domain{}
+	if pi, err := strconv.Atoi(domainID); err == nil {
+		dModel.ID = uint(pi)
+		err = s.DB.Model(&dModel).Association("Nameservers").Clear()
+		if err != nil {
+			log.Println(err)
+		}
+		err = s.DB.Model(&dModel).Association("Releases").Clear()
+		if err != nil {
+			log.Println(err)
+		}
+		err = s.DB.Model(&dModel).Association("Parses").Clear()
+		if err != nil {
+			log.Println(err)
+		}
+		res := s.DB.Unscoped().Delete(&dModel)
+		if res.Error != nil {
+			log.Println(res.Error)
+		}
+	} else {
+		log.Println("domain duplication filtering failed", err)
+	}
 }
 
 func (s *Service) load() map[string]Domain {
