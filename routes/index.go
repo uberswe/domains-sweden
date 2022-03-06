@@ -13,8 +13,18 @@ import (
 
 type IndexData struct {
 	PageData
-	Domains     []IndexDomain
-	Nameservers []IndexNameserver
+	Domains        []IndexDomain
+	Nameservers    []IndexNameserver
+	Search         string
+	Min            string
+	Max            string
+	Extension      string
+	Website        string
+	Releasing      string
+	Expiring       string
+	NoSpecialChars string
+	NoNumbers      string
+	Count          map[int]string
 }
 
 type IndexDomain struct {
@@ -115,6 +125,11 @@ func (controller Controller) Index(c *gin.Context) {
 		ipd = indexCache.IndexData
 	}
 	ipd.PageData = pd
+
+	ipd.Count = make(map[int]string)
+	for i := 1; i <= 90; i++ {
+		ipd.Count[i] = fmt.Sprintf("%d", i)
+	}
 
 	c.HTML(http.StatusOK, "index.html", ipd)
 }

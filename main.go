@@ -126,8 +126,10 @@ func Run() {
 
 	// We want to handle both POST and GET requests on the /search route. We define both but use the same function to handle the requests.
 	r.GET("/whois", controller.Whois)
+	r.GET("/lang/:lang", controller.Language)
 	r.GET("/search", controller.Search)
 	r.POST("/search", controller.Search)
+	r.GET("/contact-us", controller.Contact)
 	r.Any("/search/:page", controller.Search)
 	r.Any("/search/:page/:query", controller.Search)
 	r.GET("/top-nameservers", controller.TopNameservers)
@@ -147,7 +149,6 @@ func Run() {
 	noAuth.Use(middleware.NoAuth())
 
 	noAuth.GET("/login", controller.Login)
-	noAuth.GET("/contact-us", controller.Contact)
 	noAuth.GET("/register", controller.Register)
 	noAuth.GET("/activate/resend", controller.ResendActivation)
 	noAuth.GET("/activate/:token", controller.Activate)

@@ -5,10 +5,7 @@
         <div class="row pb-5 pt-5">
             <div class="col">
                 <h2>{{ call .Trans "Search All Swedish .SE And .NU Domains" }}</h2>
-                <form method="post" action="/search" class="d-flex">
-                    <input name="search" class="form-control me-2" type="search" placeholder="{{ call .Trans "Search" }}" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">{{ call .Trans "Search" }}</button>
-                </form>
+                {{ template "searchcomponent.html" . }}
             </div>
         </div>
         <div class="row pb-5">

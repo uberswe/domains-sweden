@@ -3,14 +3,17 @@
 <main class="flex-shrink-0">
     <div class="container">
         <div class="row pb-5 mt-5">
-            <div class="col">
+            <div class="col-sm-8">
                 <h2>{{ .Title }}</h2>
                 <p>{{ call .Trans "This domain was first seen by Domäner.xyz at" }} {{ .FirstSeen }}</p>
                 {{ if .HasReleaseAt }}
-                {{ call .Trans "This domain is pending delete and if it is not renewed it can be registered again after"
+                <p>{{ call .Trans "This domain is pending delete and if it is not renewed it can be registered again after"
                 }} {{
-                .ReleaseAt }} {{ call .Trans "at 04.00 UTC at the earliest" }}
+                .ReleaseAt }} {{ call .Trans "at 04.00 UTC at the earliest" }}</p>
                 {{ end }}
+            </div>
+            <div class="col-sm-4">
+                <a href="https://{{ .Title }}" class="btn btn-primary btn-lg" tabindex="-1" role="button">{{ call .Trans "Visit" }} {{ .Title }}</a>
             </div>
         </div>
         <div class="row pb-5">

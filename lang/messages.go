@@ -297,4 +297,108 @@ var translationMessages = []i18n.Message{
 		ID:    "see_all_nameservers",
 		Other: "See all nameservers",
 	},
+	{
+		ID:    "tools",
+		Other: "Tools",
+	},
+	{
+		ID:    "data",
+		Other: "Data",
+	},
+	{
+		ID:    "language",
+		Other: "Language",
+	},
+	{
+		ID:    "whois_lookup",
+		Other: "WHOIS Lookup",
+	},
+	{
+		ID:    "top_nameservers",
+		Other: "Top Nameservers",
+	},
+	{
+		ID:    "domains_being_released_soon",
+		Other: "Domains Being Released Soon",
+	},
+	{
+		ID:    "min_length",
+		Other: "Min Length",
+	},
+	{
+		ID:    "max_length",
+		Other: "Max Length",
+	},
+	{
+		ID:    "extension",
+		Other: "Extension",
+	},
+	{
+		ID:    "website",
+		Other: "Website",
+	},
+	{
+		ID:    "days_to_release",
+		Other: "Days to release",
+	},
+	{
+		ID:    "releasing_soon",
+		Other: "Releasing soon",
+	},
+	{
+		ID:    "no_special_characters",
+		Other: "No special characters",
+	},
+	{
+		ID:    "no_numbers",
+		Other: "No numbers",
+	},
+	{
+		ID:    "request_whois_lookup",
+		Other: "Request WHOIS Lookup",
+	},
+	{
+		ID:    "visit",
+		Other: "Visit",
+	},
+	{
+		ID:    "website_data",
+		Other: "Website Data",
+	},
+	{
+		ID:    "page_load_time",
+		Other: "Page Load Time",
+	},
+	{
+		ID:    "seconds",
+		Other: "Seconds",
+	},
+	{
+		ID:    "page_size",
+		Other: "Page Size",
+	},
+	{
+		ID:    "mb",
+		Other: "Mb",
+	},
+	{
+		ID:    "last_retrieved",
+		Other: "Last Retrieved",
+	},
+	{
+		ID:    "unknown",
+		Other: "Unknown",
+	},
+	{
+		ID:    "ok_caps",
+		Other: "OK",
+	},
+	{
+		ID:    "error",
+		Other: "Error",
+	},
+	{
+		ID:    "website_status",
+		Other: "Website Status",
+	},
 }

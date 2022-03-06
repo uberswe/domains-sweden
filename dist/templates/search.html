@@ -3,24 +3,45 @@
 <main class="flex-shrink-0">
     <div class="container">
         <h2 class="mt-5">{{ call .Trans "Search Results" }}</h2>
-        {{ template "messages.html" . }}
-        <table class="table table-hover table-sm" id="search-results">
-            <thead>
-            <tr>
-                <th scope="col">{{ call .Trans "Domain" }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{ range $result := .Results }}
-            <tr>
-                <td>
-                    <a href="{{ $result.URL }}">{{ $result.Host }}</a>
-                </td>
-            </tr>
-            {{ end }}
-            </tbody>
-        </table>
-        {{ template "pagination.html" . }}
+        <div class="row">
+            <div class="col-sm pb-2">
+                {{ template "searchcomponent.html" . }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                {{ template "messages.html" . }}
+                <table class="table table-hover table-sm" id="search-results">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ call .Trans "Domain" }}</th>
+                        <th scope="col">{{ call .Trans "Earliest Availability Date" }}</th>
+                        <th scope="col">{{ call .Trans "Website Status" }}</th>
+                        <th scope="col">{{ call .Trans "Last Retrieved" }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{ range $result := .Results }}
+                    <tr>
+                        <td>
+                            <a href="{{ $result.URL }}">{{ $result.Host }}</a>
+                        </td>
+                        <td>
+                            {{ $result.ReleasedAt }}
+                        </td>
+                        <td>
+                            {{ $result.Status }}
+                        </td>
+                        <td>
+                            {{ $result.Requested }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                    </tbody>
+                </table>
+                {{ template "pagination.html" . }}
+            </div>
+        </div>
     </div>
 </main>
 

@@ -1,0 +1,80 @@
+<form method="post" action="/search" class="d-flex">
+    <div class="container" style="padding-left: 0; padding-right: 0;">
+        <div class="row pt-2">
+            <div class="col-sm-11">
+                <input name="search" class="form-control me-2" type="search"
+                       placeholder='{{ call .Trans "Search" }}' aria-label="Search" value="{{ .Search }}">
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-outline-success" type="submit">{{ call .Trans "Search" }}
+                </button>
+            </div>
+        </div>
+        <div class="row pt-2">
+            <div class="col-sm">
+                <select class="form-select" name="min" aria-label='{{ call .Trans "Min Length" }}'>
+                    {{ $min := .Min }}
+                    <option value="" {{ if eq $min "" }}SELECTED{{ end }}>{{ call .Trans "Min Length" }}</option>
+                    {{ range $index, $value := .Count }}
+                        <option value="{{ $value }}" {{ if eq $min $value }}SELECTED{{ end }}>{{ $value }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="col-sm">
+                <select class="form-select" name="max" aria-label='{{ call .Trans "Max Length" }}'>
+                    {{ $max := .Max }}
+                    <option value="" {{ if eq $max "" }}SELECTED{{ end }}>{{ call .Trans "Max Length" }}</option>
+                    {{ range $index, $value := .Count }}
+                    <option value="{{ $value }}" {{ if eq $max $value }}SELECTED{{ end }}>{{ $value }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="col-sm">
+                <select class="form-select" name="extension" aria-label='{{ call .Trans "Extension" }}'>
+                    <option value="" {{ if eq .Extension "" }}SELECTED{{ end }}>{{ call .Trans "Extension" }}</option>
+                    <option value="se" {{ if eq .Extension "se" }}SELECTED{{ end }}>.se</option>
+                    <option value="nu" {{ if eq .Extension "nu" }}SELECTED{{ end }}>.nu</option>
+                </select>
+            </div>
+            <div class="col-sm">
+                <select class="form-select" name="website" aria-label='{{ call .Trans "Website" }}'>
+                    <option value="" {{ if eq .Website "" }}SELECTED{{ end }}>{{ call .Trans "Website" }}</option>
+                    <option value="1" {{ if eq .Website "1" }}SELECTED{{ end }}>Has had a website</option>
+                    <option value="2" {{ if eq .Website "2" }}SELECTED{{ end }}>Has never had a website</option>
+                </select>
+            </div>
+            <div class="col-sm">
+                <select class="form-select" name="releasing" aria-label='{{ call .Trans "Days to release" }}'>
+                    {{ $releasing := .Releasing }}
+                    <option value="" {{ if eq $releasing "" }}SELECTED{{ end }}>{{ call .Trans "Days to release" }}</option>
+                        {{ range $index, $value := .Count }}
+                        <option value="{{ $value }}" {{ if eq $releasing $value }}SELECTED{{ end }}>{{ $value }}</option>
+                        {{ end }}
+                </select>
+            </div>
+        </div>
+        <div class="row pt-2">
+            <div class="col-sm">
+                <input class="form-check-input" type="checkbox" name="expiring" value="1"
+                       id="expiringCheckbox" {{ if eq .Expiring "1" }}CHECKED{{ end }}>
+                <label class="form-check-label" for="expiringCheckbox">
+                    {{ call .Trans "Releasing soon" }}
+                </label>
+            </div>
+            <div class="col-sm">
+                <input class="form-check-input" type="checkbox" name="nospecialchars" value="1"
+                       id="noSpecialChars" {{ if eq .NoSpecialChars "1" }}CHECKED{{ end }}>
+                <label class="form-check-label" for="noSpecialChars">
+                    {{ call .Trans "No special characters" }}
+                </label>
+            </div>
+            <div class="col-sm">
+                <input class="form-check-input" type="checkbox" name="nonumbers" value="1"
+                       id="noNumbers"  {{ if eq .NoNumbers "1" }}CHECKED{{ end }}>
+                <label class="form-check-label" for="noNumbers">
+                    {{ call .Trans "No numbers" }}
+                </label>
+            </div>
+        </div>
+    </div>
+</form>

@@ -42,6 +42,14 @@ other = "Skapad av"
 hash = "sha1-cd2bf2ee8212e8af2ba8d2b47153c7ca383adf80"
 other = "Du har nu en autentiserad session, du kan logga ut med länken i navigeringsfältet ovan."
 
+[data]
+hash = "sha1-e5e429bcc9c2e4a41a3c7a4d96203be6cb273b11"
+other = "Data"
+
+[days_to_release]
+hash = "sha1-d4bb64f6ed4355f560ca033cf46e1a1dab756705"
+other = "Dagar till frisläppning"
+
 [domain]
 hash = "sha1-9b10914d8b0a097ace7176e8973f5c3dee92bb44"
 other = "Domän"
@@ -62,6 +70,10 @@ other = "tidigast 04.00 UTC"
 hash = "sha1-a0d641b3f1afe93a0323a0128a013778c7d8ae93"
 other = "Domäner"
 
+[domains_being_released_soon]
+hash = "sha1-492ac901b187d29f1b0095be71720eea9868d018"
+other = "Domäner som snart blir tillgängliga"
+
 [earliest_availability_date]
 hash = "sha1-2d537d9f88d2f27b68c1b371177f26e08f2263a6"
 other = "Tidigaste tillgänglighetsdatum"
@@ -70,9 +82,17 @@ other = "Tidigaste tillgänglighetsdatum"
 hash = "sha1-c94d3175a6560565410511df2cebab9cda96027e"
 other = "E-postadress"
 
+[error]
+hash = "sha1-7f2f6a15cf8da2b27e5a4af47b58e7ad71c0b3d9"
+other = "Fel Uppstod"
+
 [expired_message]
 hash = "sha1-151dff6743d90acc47ed5287412b8d2a0ac20280"
 other = "Utgångna domäner som kan bli tillgängliga snart"
+
+[extension]
+hash = "sha1-659087d3ca23db6ae11e0a43579b5f4a260dda11"
+other = ".se eller .nu"
 
 [footer_message_1]
 hash = "sha1-14d277545460f1796542547a5cf2151fc433f917"
@@ -114,6 +134,14 @@ other = "Läs mer om detta projekt på"
 hash = "sha1-094b0fe0e302854af1311afab85b5203ba457a3b"
 other = "sv"
 
+[language]
+hash = "sha1-89b86ab0e66f527166d98df92ddbcf5416ed58f6"
+other = "Språk"
+
+[last_retrieved]
+hash = "sha1-6bcccbafca3a7ea358b6cc90aa5c4ee6050968b4"
+other = "Senast hämtad"
+
 [login]
 hash = "sha1-4e5a2893bdcc7d239c1db72e4c4ffbe4bea73174"
 other = "Logga in"
@@ -133,6 +161,18 @@ other = "Genom att trycka på knappen nedan för att logga in godkänner du anv�
 [logout]
 hash = "sha1-e43d612e11f1568f2373e719d4c4b08dcecdc7cc"
 other = "Logga ut"
+
+[max_length]
+hash = "sha1-ecce794df6e499cbf05cde38df021f9dd22ef088"
+other = "Max Längd"
+
+[mb]
+hash = "sha1-0fe4adf0f5f5b3e196cbfd6f39608b2c9f29165c"
+other = "Mb"
+
+[min_length]
+hash = "sha1-ff486edbaf8d8abc55ae75d2288874e9fe16eb01"
+other = "Min Längd"
 
 [most_popular_nameservers]
 hash = "sha1-497ee4331fcc9ab57a6894182dc384c3ce054f3f"
@@ -154,9 +194,29 @@ other = "Namnservrar"
 hash = "sha1-bc981983e7f547dc62e19a1e383acfe00782a6d5"
 other = "Nästa"
 
+[no_numbers]
+hash = "sha1-7a5d5ab2aa3f3a1a86f63f4f60c510a2979b41ee"
+other = "Utan siffror"
+
 [no_results_found]
 hash = "sha1-658e79f9dc7fca34dc164cbb79e1c0be3cdebf23"
 other = "Inga resultat hittades"
+
+[no_special_characters]
+hash = "sha1-652e97638472dde454bb9b043f3d5ad481a49474"
+other = "Utan specialtecken"
+
+[ok_caps]
+hash = "sha1-9ce3bd4224c8c1780db56b4125ecf3f24bf748b7"
+other = "OK"
+
+[page_load_time]
+hash = "sha1-358401bfd16510f20d2f5b992b1423f891694269"
+other = "Sidans Laddningstid"
+
+[page_size]
+hash = "sha1-f3e1d7bb2d764a3163a3d03067ccaa2f1c535cf5"
+other = "Sidans Storlek"
 
 [password]
 hash = "sha1-8be3c943b1609fffbfc51aad666d0a04adf83c9d"
@@ -194,6 +254,10 @@ other = "Det gick inte att genomföra registreringen, se till att uppgifterna du
 hash = "sha1-300d4e738bd6bf5c14a303c6c84f36a1bbf2132f"
 other = "Tack för din registrering. Ett aktiveringsmail har skickats med steg som beskriver hur du aktiverar ditt konto."
 
+[releasing_soon]
+hash = "sha1-1bdb702479f4bd7929e44597c3b5a6d97e21b004"
+other = "Tillgängliga Snart"
+
 [request_activation_email]
 hash = "sha1-8c63a65400fb703de388b9b17b308b62f7477b16"
 other = "Begär aktiveringsmail"
@@ -205,6 +269,10 @@ other = "Begär ett nytt aktiveringsmail"
 [request_reset_email]
 hash = "sha1-2a2c3609527fa9a048ae9f66b12597c7fa10379c"
 other = "Begär återställningsmail"
+
+[request_whois_lookup]
+hash = "sha1-80c636271ac505a5d45ba7d85c004cfd8a0c036c"
+other = "Begär WHOIS Sökning"
 
 [resend_activation_email]
 hash = "sha1-2a765254a16b8d77c89125cabc42996f28dac3e6"
@@ -246,6 +314,10 @@ other = "Sök Bland Alla Svenska .SE Och .NU Domäner"
 hash = "sha1-5e054413dacd642ddacc8f8ec146442bea000086"
 other = "Sökresultat"
 
+[seconds]
+hash = "sha1-5fb1db527825d2996e37c655e5dec49d4da80c09"
+other = "Sekunder"
+
 [see_all_nameservers]
 hash = "sha1-e3cf3e917a87cd12075bf5fb4c7f3f224b7497e9"
 other = "Se alla namnservrar"
@@ -258,6 +330,18 @@ other = "Se alla domäner som släpps snart"
 hash = "sha1-8539c7eccb86267e841b8d78047cd28d6e7c4c7b"
 other = "Domäner.xyz"
 
+[tools]
+hash = "sha1-4fa8cc860c52b268dc6a3adcde7305e9415db5bb"
+other = "Verktyg"
+
+[top_nameservers]
+hash = "sha1-8111f1a232eabd3688ae6e8984e2510cc71e7a0b"
+other = "Topp Namnservrar"
+
+[unknown]
+hash = "sha1-bc7819b34ff87570745fbe461e36a16f80e562ce"
+other = "Okänt"
+
 [user_activation]
 hash = "sha1-065b4495daa8deaa8b7faad2c855f786bdb9e8ee"
 other = "Användaraktivering"
@@ -265,3 +349,23 @@ other = "Användaraktivering"
 [user_activation_email]
 hash = "sha1-66f145eb134e23445d22ae815c3415a1849baf3e"
 other = "Använd följande länk för att aktivera ditt konto. Om detta inte begärdes av dig, ignorera detta e-postmeddelande.\n%s"
+
+[visit]
+hash = "sha1-7c9a8664b15c7dee7f596b0f90d4f31cc93f1293"
+other = "Besök"
+
+[website]
+hash = "sha1-2e8a57cc5c472f4ac3b071979a38e80db7e59e87"
+other = "Webbsida"
+
+[website_data]
+hash = "sha1-ceab22f4c66f33691219f46896ec2effe2e672b6"
+other = "Sidans Data"
+
+[website_status]
+hash = "sha1-3e5b43ee812565bb18394607d1f9f748d43b990b"
+other = "Sidans Status"
+
+[whois_lookup]
+hash = "sha1-fa3fd15f6ef433939fdcc67fafd7d1e3c4966538"
+other = "WHOIS Sökning"

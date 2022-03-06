@@ -1,9 +1,12 @@
 package lang
 
 import (
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
+
+const CookieKey = "lang"
 
 type Service struct {
 	bundle    *i18n.Bundle
@@ -12,7 +15,15 @@ type Service struct {
 }
 
 func New(ctx *gin.Context, bundle *i18n.Bundle) Service {
-	localizer := i18n.NewLocalizer(bundle, ctx.Request.Header.Get("Accept-Language"), "en")
+	session := sessions.Default(ctx)
+	sessionLang := ""
+	ls := session.Get(CookieKey)
+	if ls == "sv" {
+		sessionLang = "sv"
+	} else if ls == "en" {
+		sessionLang = "en"
+	}
+	localizer := i18n.NewLocalizer(bundle, sessionLang, ctx.Request.Header.Get("Accept-Language"), "en")
 	return Service{
 		bundle:    bundle,
 		ctx:       ctx,
