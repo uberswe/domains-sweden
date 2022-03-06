@@ -39,8 +39,8 @@
             <div class="col-sm">
                 <select class="form-select" name="website" aria-label='{{ call .Trans "Website" }}'>
                     <option value="" {{ if eq .Website "" }}SELECTED{{ end }}>{{ call .Trans "Website" }}</option>
-                    <option value="1" {{ if eq .Website "1" }}SELECTED{{ end }}>Has had a website</option>
-                    <option value="2" {{ if eq .Website "2" }}SELECTED{{ end }}>Has never had a website</option>
+                    <option value="1" {{ if eq .Website "1" }}SELECTED{{ end }}>{{ call .Trans "Has had a website" }}</option>
+                    <option value="2" {{ if eq .Website "2" }}SELECTED{{ end }}>{{ call .Trans "Has never had a website" }}</option>
                 </select>
             </div>
             <div class="col-sm">

@@ -401,4 +401,12 @@ var translationMessages = []i18n.Message{
 		ID:    "website_status",
 		Other: "Website Status",
 	},
+	{
+		ID:    "has_had_a_website",
+		Other: "Has had a website",
+	},
+	{
+		ID:    "has_never_had_a_website",
+		Other: "Has never had a website",
+	},
 }

@@ -110,6 +110,14 @@ other = "Använd formuläret nedan för att återställa ditt lösenord. Om vi h
 hash = "sha1-d25d119c050b6ac501c231415759e5ec3a72de9b"
 other = "Ett e-postmeddelande med instruktioner som beskriver hur du återställer ditt lösenord har skickats."
 
+[has_had_a_website]
+hash = "sha1-054ad272de3c596f8bc1d59405a38798e5ef0043"
+other = "Har haft en webbsida"
+
+[has_never_had_a_website]
+hash = "sha1-9bab8219eb83c73662884a96422f1aa6dbbb7864"
+other = "Har aldrig haft en webbsida"
+
 [home]
 hash = "sha1-70f8bb9a8a5393ef080507a89e4b98d139000d65"
 other = "Hem"
