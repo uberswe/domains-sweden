@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -104,8 +105,8 @@ func (controller Controller) Search(c *gin.Context) {
 		Offset(resultsPerPage * (page - 1))
 
 	if search != "" {
-		q = q.Where("BINARY domains.host LIKE ?", searchFilter).
-			Order(gorm.Expr("CASE WHEN BINARY domains.host LIKE ? THEN 1 WHEN BINARY domains.host LIKE ? THEN 2 WHEN BINARY domains.host LIKE ? THEN 4 ELSE 3 END", search, search2, search4))
+		q = q.Where("BINARY domains.host LIKE ?", strings.ToLower(searchFilter)).
+			Order(gorm.Expr("CASE WHEN BINARY domains.host LIKE ? THEN 1 WHEN BINARY domains.host LIKE ? THEN 2 WHEN BINARY domains.host LIKE ? THEN 4 ELSE 3 END", strings.ToLower(search), strings.ToLower(search2), strings.ToLower(search4)))
 	}
 
 	if i, err := strconv.Atoi(min); err == nil {
