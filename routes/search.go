@@ -100,7 +100,7 @@ func (controller Controller) Search(c *gin.Context) {
 		Joins("LEFT JOIN parses ON parses.domain_id = domains.id").
 		Joins("LEFT JOIN domain_releases ON domain_releases.domain_id = domains.id").
 		Joins("LEFT JOIN releases ON domain_releases.release_id = releases.id").
-		Order("LENGTH(domains.host)").
+		Order("LENGTH(domains.host), releases.released_at, domains.host").
 		Limit(resultsPerPage).
 		Offset(resultsPerPage * (page - 1))
 
