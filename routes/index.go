@@ -40,8 +40,9 @@ type IndexNameserver struct {
 }
 
 type IndexCache struct {
-	Cached    time.Time
-	IndexData IndexData
+	Cached     time.Time
+	IndexData  IndexData
+	Generating bool
 }
 
 var indexCache = IndexCache{}
@@ -54,76 +55,21 @@ func (controller Controller) Index(c *gin.Context) {
 	ipd := IndexData{}
 
 	if indexCache.Cached.Before(time.Now().Add(-6 * time.Hour)) {
-
-		var domains []struct {
-			Host       string
-			ReleasedAt time.Time
-		}
-
-		res := controller.db.Model(&models.Release{}).
-			Select("domains.host, releases.released_at").
-			Joins("left join domain_releases on domain_releases.release_id = releases.id").
-			Joins("left join domains on domain_releases.domain_id = domains.id").
-			Where("releases.released_at > NOW()").
-			Order("domains.id ASC").
-			Offset(50).
-			Limit(20).
-			Find(&domains)
-
-		if res.Error != nil {
-			log.Println(res.Error)
-		}
-
-		for _, d := range domains {
-			ipd.Domains = append(ipd.Domains, IndexDomain{
-				Host:       domain.Title(d.Host),
-				URL:        fmt.Sprintf("/domains/%s", domain.ToUnicode(d.Host)),
-				ReleasesAt: d.ReleasedAt.Format("2006-01-02"),
-			})
-		}
-
-		var domainNameservers []models.NameserverAggregate
-
-		res = controller.db.Model(models.NameserverAggregate{}).
-			Order("count DESC").
-			Limit(20).
-			Find(&domainNameservers)
-
-		if res.Error != nil {
-			log.Println(res.Error)
-		}
-
-		var nameservers []models.Nameserver
-
-		var nsIds []int
-
-		for _, dns := range domainNameservers {
-			nsIds = append(nsIds, dns.NameserverID)
-		}
-
-		controller.db.Find(&nameservers, nsIds)
-
-		for _, ns := range nameservers {
-			count := 0
-			for _, dn := range domainNameservers {
-				if dn.NameserverID == int(ns.ID) {
-					count = dn.Count
-				}
+		if indexCache.IndexData.Domains == nil {
+			indexCache.IndexData = controller.generateIndex()
+			indexCache.Cached = time.Now()
+		} else {
+			if !indexCache.Generating {
+				indexCache.Generating = true
+				go func() {
+					indexCache.IndexData = controller.generateIndex()
+					indexCache.Cached = time.Now()
+					indexCache.Generating = false
+				}()
 			}
-			ipd.Nameservers = append(ipd.Nameservers, IndexNameserver{
-				Host:  domain.ToUnicode(ns.Host),
-				URL:   fmt.Sprintf("/nameservers/%s", domain.ToUnicode(ns.Host)),
-				Count: int64(count),
-			})
 		}
-		sort.Slice(ipd.Nameservers, func(i, j int) bool {
-			return ipd.Nameservers[i].Count > ipd.Nameservers[j].Count
-		})
-		indexCache.IndexData = ipd
-		indexCache.Cached = time.Now()
-	} else {
-		ipd = indexCache.IndexData
 	}
+	ipd = indexCache.IndexData
 	ipd.PageData = pd
 
 	ipd.Count = make(map[int]string)
@@ -132,4 +78,72 @@ func (controller Controller) Index(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "index.html", ipd)
+}
+
+func (controller Controller) generateIndex() (ipd IndexData) {
+	var domains []struct {
+		Host       string
+		ReleasedAt time.Time
+	}
+
+	res := controller.db.Model(&models.Release{}).
+		Select("domains.host, releases.released_at").
+		Joins("left join domain_releases on domain_releases.release_id = releases.id").
+		Joins("left join domains on domain_releases.domain_id = domains.id").
+		Where("releases.released_at > NOW()").
+		Order("domains.id ASC").
+		Offset(50).
+		Limit(20).
+		Find(&domains)
+
+	if res.Error != nil {
+		log.Println(res.Error)
+	}
+
+	for _, d := range domains {
+		ipd.Domains = append(ipd.Domains, IndexDomain{
+			Host:       domain.Title(d.Host),
+			URL:        fmt.Sprintf("/domains/%s", domain.ToUnicode(d.Host)),
+			ReleasesAt: d.ReleasedAt.Format("2006-01-02"),
+		})
+	}
+
+	var domainNameservers []models.NameserverAggregate
+
+	res = controller.db.Model(models.NameserverAggregate{}).
+		Order("count DESC").
+		Limit(20).
+		Find(&domainNameservers)
+
+	if res.Error != nil {
+		log.Println(res.Error)
+	}
+
+	var nameservers []models.Nameserver
+
+	var nsIds []int
+
+	for _, dns := range domainNameservers {
+		nsIds = append(nsIds, dns.NameserverID)
+	}
+
+	controller.db.Find(&nameservers, nsIds)
+
+	for _, ns := range nameservers {
+		count := 0
+		for _, dn := range domainNameservers {
+			if dn.NameserverID == int(ns.ID) {
+				count = dn.Count
+			}
+		}
+		ipd.Nameservers = append(ipd.Nameservers, IndexNameserver{
+			Host:  domain.ToUnicode(ns.Host),
+			URL:   fmt.Sprintf("/nameservers/%s", domain.ToUnicode(ns.Host)),
+			Count: int64(count),
+		})
+	}
+	sort.Slice(ipd.Nameservers, func(i, j int) bool {
+		return ipd.Nameservers[i].Count > ipd.Nameservers[j].Count
+	})
+	return ipd
 }
