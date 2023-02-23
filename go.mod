@@ -26,10 +26,8 @@ require (
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/ulule/limiter/v3 v3.9.0
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
-	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
-	golang.org/x/sys v0.0.0-20220224120231-95c6836cb0e7 // indirect
-	golang.org/x/text v0.3.7
-	golang.org/x/tools v0.1.9 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
+	golang.org/x/text v0.3.8
 	google.golang.org/protobuf v1.27.1 // indirect
 	gorm.io/driver/mysql v1.3.2
 	gorm.io/driver/postgres v1.3.1
